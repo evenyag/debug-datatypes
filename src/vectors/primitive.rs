@@ -49,13 +49,19 @@ pub type Float64Vector = PrimitiveVector<Float64Type>;
 
 /// Vector for primitive data types.
 pub struct PrimitiveVector<T: LogicalPrimitiveType> {
-    array: PrimitiveArray<T::ArrowPrimitive>,
+    array: Vec<Option<T::Native>>,
+    padding0: Option<String>,
+    padding1: Option<String>,
+    padding2: Option<String>,
+    padding3: Option<String>,
+    padding4: usize,
+    // array: PrimitiveArray<T::ArrowPrimitive>,
 }
 
 impl<T: LogicalPrimitiveType> PrimitiveVector<T> {
-    pub fn new(array: PrimitiveArray<T::ArrowPrimitive>) -> Self {
-        Self { array }
-    }
+    // pub fn new(array: PrimitiveArray<T::ArrowPrimitive>) -> Self {
+    //     Self { array }
+    // }
 
     // pub fn try_from_arrow_array(array: impl AsRef<dyn Array>) -> Result<Self> {
     //     let data = array
@@ -71,51 +77,70 @@ impl<T: LogicalPrimitiveType> PrimitiveVector<T> {
     //     Ok(Self::new(concrete_array))
     // }
 
-    pub fn from_slice<P: AsRef<[T::Native]>>(slice: P) -> Self {
-        let iter = slice.as_ref().iter().copied();
-        Self {
-            array: PrimitiveArray::from_iter_values(iter),
-        }
-    }
+    // pub fn from_slice<P: AsRef<[T::Native]>>(slice: P) -> Self {
+    //     let iter = slice.as_ref().iter().copied();
+    //     Self {
+    //         array: PrimitiveArray::from_iter_values(iter),
+    //     }
+    // }
 
-    pub fn from_wrapper_slice<P: AsRef<[T::Wrapper]>>(slice: P) -> Self {
-        let iter = slice.as_ref().iter().copied().map(WrapperType::into_native);
-        Self {
-            array: PrimitiveArray::from_iter_values(iter),
-        }
-    }
+    // pub fn from_wrapper_slice<P: AsRef<[T::Wrapper]>>(slice: P) -> Self {
+    //     let iter = slice.as_ref().iter().copied().map(WrapperType::into_native);
+    //     Self {
+    //         array: PrimitiveArray::from_iter_values(iter),
+    //     }
+    // }
 
     pub fn from_vec(array: Vec<T::Native>) -> Self {
+        let array = array.into_iter().map(Some).collect();
         Self {
-            array: PrimitiveArray::from_iter_values(array),
+            array,
+            padding0: None,
+            padding1: None,
+            padding2: None,
+            padding3: None,
+            padding4: 0,
         }
+
+        // Self {
+        //     array: PrimitiveArray::from_iter_values(array),
+        // }
     }
 
     pub fn from_values<I: IntoIterator<Item = T::Native>>(iter: I) -> Self {
+        let array = iter.into_iter().map(Some).collect();
         Self {
-            array: PrimitiveArray::from_iter_values(iter),
+            array,
+            padding0: None,
+            padding1: None,
+            padding2: None,
+            padding3: None,
+            padding4: 0,
         }
+        // Self {
+        //     array: PrimitiveArray::from_iter_values(iter),
+        // }
     }
 
-    pub(crate) fn as_arrow(&self) -> &PrimitiveArray<T::ArrowPrimitive> {
-        &self.array
-    }
+    // pub(crate) fn as_arrow(&self) -> &PrimitiveArray<T::ArrowPrimitive> {
+    //     &self.array
+    // }
 
-    fn to_array_data(&self) -> ArrayData {
-        self.array.data().clone()
-    }
+    // fn to_array_data(&self) -> ArrayData {
+    //     self.array.data().clone()
+    // }
 
-    fn from_array_data(data: ArrayData) -> Self {
-        Self {
-            array: PrimitiveArray::from(data),
-        }
-    }
+    // fn from_array_data(data: ArrayData) -> Self {
+    //     Self {
+    //         array: PrimitiveArray::from(data),
+    //     }
+    // }
 
-    // To distinguish with `Vector::slice()`.
-    fn get_slice(&self, offset: usize, length: usize) -> Self {
-        let data = self.array.data().slice(offset, length);
-        Self::from_array_data(data)
-    }
+    // // To distinguish with `Vector::slice()`.
+    // fn get_slice(&self, offset: usize, length: usize) -> Self {
+    //     let data = self.array.data().slice(offset, length);
+    //     Self::from_array_data(data)
+    // }
 }
 
 impl<T: LogicalPrimitiveType> Vector for PrimitiveVector<T> {
@@ -195,22 +220,29 @@ impl<T: LogicalPrimitiveType> fmt::Debug for PrimitiveVector<T> {
     }
 }
 
-impl<T: LogicalPrimitiveType> From<PrimitiveArray<T::ArrowPrimitive>> for PrimitiveVector<T> {
-    fn from(array: PrimitiveArray<T::ArrowPrimitive>) -> Self {
-        Self { array }
-    }
-}
+// impl<T: LogicalPrimitiveType> From<PrimitiveArray<T::ArrowPrimitive>> for PrimitiveVector<T> {
+//     fn from(array: PrimitiveArray<T::ArrowPrimitive>) -> Self {
+//         Self { array }
+//     }
+// }
 
 impl<T: LogicalPrimitiveType> From<Vec<Option<T::Native>>> for PrimitiveVector<T> {
     fn from(v: Vec<Option<T::Native>>) -> Self {
         Self {
-            array: PrimitiveArray::from_iter(v),
+            array: v,
+            padding0: None,
+            padding1: None,
+            padding2: None,
+            padding3: None,
+            padding4: 0,
+            // array: PrimitiveArray::from_iter(v),
         }
     }
 }
 
 pub struct PrimitiveIter<'a, T: LogicalPrimitiveType> {
-    iter: ArrayIter<&'a PrimitiveArray<T::ArrowPrimitive>>,
+    iter: std::slice::Iter<'a, Option<T::Native>>,
+    // iter: ArrayIter<&'a PrimitiveArray<T::ArrowPrimitive>>,
 }
 
 impl<'a, T: LogicalPrimitiveType> Iterator for PrimitiveIter<'a, T> {
@@ -234,11 +266,12 @@ impl<T: LogicalPrimitiveType> ScalarVector for PrimitiveVector<T> {
     type Builder = PrimitiveVectorBuilder<T>;
 
     fn get_data(&self, idx: usize) -> Option<Self::RefItem<'_>> {
-        if self.array.is_valid(idx) {
-            Some(T::Wrapper::from_native(self.array.value(idx)))
-        } else {
-            None
-        }
+        // if self.array.is_valid(idx) {
+        //     Some(T::Wrapper::from_native(self.array.value(idx)))
+        // } else {
+        //     None
+        // }
+        self.array[idx].map(|v| T::Wrapper::from_native(v))
     }
 
     fn iter_data(&self) -> Self::Iter<'_> {
@@ -285,7 +318,8 @@ pub type Float64VectorBuilder = PrimitiveVectorBuilder<Float64Type>;
 
 /// Builder to build a primitive vector.
 pub struct PrimitiveVectorBuilder<T: LogicalPrimitiveType> {
-    mutable_array: PrimitiveBuilder<T::ArrowPrimitive>,
+    // mutable_array: PrimitiveBuilder<T::ArrowPrimitive>,
+    mutable_array: Vec<Option<T::Native>>,
 }
 
 // impl<T: LogicalPrimitiveType> MutableVector for PrimitiveVectorBuilder<T> {
@@ -340,18 +374,26 @@ where
 
     fn with_capacity(capacity: usize) -> Self {
         Self {
-            mutable_array: PrimitiveBuilder::with_capacity(capacity),
+            mutable_array: Vec::with_capacity(capacity),
+            // mutable_array: PrimitiveBuilder::with_capacity(capacity),
         }
     }
 
     fn push(&mut self, value: Option<<Self::VectorType as ScalarVector>::RefItem<'_>>) {
-        self.mutable_array
-            .append_option(value.map(|v| v.into_native()));
+        self.mutable_array.push(value.map(|v| v.into_native()));
+        // self.mutable_array
+        //     .append_option(value.map(|v| v.into_native()));
     }
 
     fn finish(&mut self) -> Self::VectorType {
         PrimitiveVector {
-            array: self.mutable_array.finish(),
+            // array: self.mutable_array.finish(),
+            array: std::mem::take(&mut self.mutable_array),
+            padding0: None,
+            padding1: None,
+            padding2: None,
+            padding3: None,
+            padding4: 0,
         }
     }
 }
