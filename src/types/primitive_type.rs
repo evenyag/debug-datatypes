@@ -15,8 +15,8 @@
 use std::cmp::Ordering;
 use std::fmt;
 
-use arrow::datatypes::{ArrowNativeType, ArrowPrimitiveType, DataType as ArrowDataType};
 use crate::common::time::{Date, DateTime};
+use arrow::datatypes::{ArrowNativeType, ArrowPrimitiveType, DataType as ArrowDataType};
 use num::NumCast;
 use serde::{Deserialize, Serialize};
 use snafu::OptionExt;
@@ -309,53 +309,5 @@ impl DataType for Int64Type {
 
     fn is_timestamp_compatible(&self) -> bool {
         true
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use std::collections::BinaryHeap;
-
-    use super::*;
-
-    #[test]
-    fn test_ord_primitive() {
-        struct Foo<T>
-        where
-            T: WrapperType,
-        {
-            heap: BinaryHeap<OrdPrimitive<T>>,
-        }
-
-        impl<T> Foo<T>
-        where
-            T: WrapperType,
-        {
-            fn push(&mut self, value: T) {
-                let value = OrdPrimitive::<T>(value);
-                self.heap.push(value);
-            }
-        }
-
-        macro_rules! test {
-            ($Type:ident) => {
-                let mut foo = Foo::<$Type> {
-                    heap: BinaryHeap::new(),
-                };
-                foo.push($Type::default());
-                assert_eq!($Type::default(), foo.heap.pop().unwrap().as_primitive());
-            };
-        }
-
-        test!(u8);
-        test!(u16);
-        test!(u32);
-        test!(u64);
-        test!(i8);
-        test!(i16);
-        test!(i32);
-        test!(i64);
-        test!(f32);
-        test!(f64);
     }
 }

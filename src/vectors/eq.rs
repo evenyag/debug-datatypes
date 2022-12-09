@@ -16,7 +16,6 @@ use std::sync::Arc;
 
 use crate::data_type::DataType;
 use crate::types::TimestampType;
-use crate::vectors::constant::ConstantVector;
 use crate::vectors::{
     BinaryVector, BooleanVector, DateTimeVector, DateVector, ListVector, PrimitiveVector,
     StringVector, TimestampMicrosecondVector, TimestampMillisecondVector,
@@ -48,28 +47,11 @@ macro_rules! is_vector_eq {
 }
 
 fn equal(lhs: &dyn Vector, rhs: &dyn Vector) -> bool {
+    use crate::data_type::ConcreteDataType::*;
+
     if lhs.data_type() != rhs.data_type() || lhs.len() != rhs.len() {
         return false;
     }
-
-    if lhs.is_const() || rhs.is_const() {
-        // Length has been checked before, so we only need to compare inner
-        // vector here.
-        return equal(
-            &**lhs
-                .as_any()
-                .downcast_ref::<ConstantVector>()
-                .unwrap()
-                .inner(),
-            &**lhs
-                .as_any()
-                .downcast_ref::<ConstantVector>()
-                .unwrap()
-                .inner(),
-        );
-    }
-
-    use crate::data_type::ConcreteDataType::*;
 
     let lhs_type = lhs.data_type();
     match lhs.data_type() {
@@ -138,10 +120,6 @@ mod tests {
             Some(b"world".to_vec()),
         ])));
         assert_vector_ref_eq(Arc::new(BooleanVector::from(vec![true, false])));
-        assert_vector_ref_eq(Arc::new(ConstantVector::new(
-            Arc::new(BooleanVector::from(vec![true])),
-            5,
-        )));
         assert_vector_ref_eq(Arc::new(BooleanVector::from(vec![true, false])));
         assert_vector_ref_eq(Arc::new(DateVector::from(vec![Some(100), Some(120)])));
         assert_vector_ref_eq(Arc::new(DateTimeVector::from(vec![Some(100), Some(120)])));
@@ -192,36 +170,6 @@ mod tests {
         assert_vector_ref_ne(
             Arc::new(Int32Vector::from_slice(&[1, 2, 3, 4])),
             Arc::new(BooleanVector::from(vec![true, true])),
-        );
-        assert_vector_ref_ne(
-            Arc::new(ConstantVector::new(
-                Arc::new(BooleanVector::from(vec![true])),
-                5,
-            )),
-            Arc::new(ConstantVector::new(
-                Arc::new(BooleanVector::from(vec![true])),
-                4,
-            )),
-        );
-        assert_vector_ref_ne(
-            Arc::new(ConstantVector::new(
-                Arc::new(BooleanVector::from(vec![true])),
-                5,
-            )),
-            Arc::new(ConstantVector::new(
-                Arc::new(BooleanVector::from(vec![false])),
-                4,
-            )),
-        );
-        assert_vector_ref_ne(
-            Arc::new(ConstantVector::new(
-                Arc::new(BooleanVector::from(vec![true])),
-                5,
-            )),
-            Arc::new(ConstantVector::new(
-                Arc::new(Int32Vector::from_slice(vec![1])),
-                4,
-            )),
         );
         assert_vector_ref_ne(Arc::new(NullVector::new(5)), Arc::new(NullVector::new(8)));
     }

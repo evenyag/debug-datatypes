@@ -24,8 +24,8 @@ pub type DateVectorBuilder = PrimitiveVectorBuilder<DateType>;
 mod tests {
     use std::sync::Arc;
 
-    use arrow::array::Array;
     use crate::common::time::date::Date;
+    use arrow::array::Array;
 
     use super::*;
     use crate::data_type::DataType;

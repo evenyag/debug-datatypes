@@ -14,8 +14,8 @@
 
 use std::sync::Arc;
 
-use arrow::datatypes::DataType as ArrowDataType;
 use crate::common::base::StringBytes;
+use arrow::datatypes::DataType as ArrowDataType;
 use serde::{Deserialize, Serialize};
 
 use crate::data_type::{DataType, DataTypeRef};

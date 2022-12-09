@@ -23,18 +23,15 @@ use crate::data_type::ConcreteDataType;
 use crate::error::{self, Result};
 use crate::serialize::Serializable;
 use crate::value::{Value, ValueRef};
-use crate::vectors::operations::VectorOp;
 
 mod binary;
 mod boolean;
-mod constant;
 mod date;
 mod datetime;
 mod eq;
 mod helper;
 mod list;
 mod null;
-mod operations;
 mod primitive;
 mod string;
 mod timestamp;
@@ -42,7 +39,6 @@ mod validity;
 
 pub use binary::{BinaryVector, BinaryVectorBuilder};
 pub use boolean::{BooleanVector, BooleanVectorBuilder};
-pub use constant::ConstantVector;
 pub use date::{DateVector, DateVectorBuilder};
 pub use datetime::{DateTimeVector, DateTimeVectorBuilder};
 pub use helper::Helper;
@@ -66,7 +62,7 @@ pub use validity::Validity;
 // TODO(yingwen): arrow 28.0 implements Clone for all arrays, we could upgrade to it and simplify
 // some codes in methods such as `to_arrow_array()` and `to_boxed_arrow_array()`.
 /// Vector of data values.
-pub trait Vector: Send + Sync + Serializable + Debug + VectorOp {
+pub trait Vector: Send + Sync + Serializable + Debug {
     /// Returns the data type of the vector.
     ///
     /// This may require heap allocation.
@@ -266,44 +262,3 @@ pub(crate) use {
     impl_extend_for_builder, impl_get_for_vector, impl_get_ref_for_vector,
     impl_try_from_arrow_array_for_vector, impl_validity_for_vector,
 };
-
-#[cfg(test)]
-pub mod tests {
-    use arrow::array::{Array, Int32Array, UInt8Array};
-    use serde_json;
-
-    use super::*;
-    use crate::data_type::DataType;
-    use crate::types::{Int32Type, LogicalPrimitiveType};
-    use crate::vectors::helper::Helper;
-
-    #[test]
-    fn test_df_columns_to_vector() {
-        let df_column: Arc<dyn Array> = Arc::new(Int32Array::from(vec![1, 2, 3]));
-        let vector = Helper::try_into_vector(df_column).unwrap();
-        assert_eq!(
-            Int32Type::build_data_type().as_arrow_type(),
-            vector.data_type().as_arrow_type()
-        );
-    }
-
-    #[test]
-    fn test_serialize_i32_vector() {
-        let df_column: Arc<dyn Array> = Arc::new(Int32Array::from(vec![1, 2, 3]));
-        let json_value = Helper::try_into_vector(df_column)
-            .unwrap()
-            .serialize_to_json()
-            .unwrap();
-        assert_eq!("[1,2,3]", serde_json::to_string(&json_value).unwrap());
-    }
-
-    #[test]
-    fn test_serialize_i8_vector() {
-        let df_column: Arc<dyn Array> = Arc::new(UInt8Array::from(vec![1, 2, 3]));
-        let json_value = Helper::try_into_vector(df_column)
-            .unwrap()
-            .serialize_to_json()
-            .unwrap();
-        assert_eq!("[1,2,3]", serde_json::to_string(&json_value).unwrap());
-    }
-}

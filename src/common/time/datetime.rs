@@ -68,28 +68,3 @@ impl DateTime {
         self.0
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    pub fn test_new_date_time() {
-        assert_eq!("1970-01-01 00:00:00", DateTime::new(0).to_string());
-        assert_eq!("1970-01-01 00:00:01", DateTime::new(1).to_string());
-        assert_eq!("1969-12-31 23:59:59", DateTime::new(-1).to_string());
-    }
-
-    #[test]
-    pub fn test_parse_from_string() {
-        let time = "1970-01-01 00:00:00";
-        let dt = DateTime::from_str(time).unwrap();
-        assert_eq!(time, &dt.to_string());
-    }
-
-    #[test]
-    pub fn test_from() {
-        let d: DateTime = 42.into();
-        assert_eq!(42, d.val());
-    }
-}

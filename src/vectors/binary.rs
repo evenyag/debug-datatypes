@@ -215,8 +215,8 @@ vectors::impl_try_from_arrow_array_for_vector!(BinaryArray, BinaryVector);
 
 #[cfg(test)]
 mod tests {
-    use arrow::datatypes::DataType as ArrowDataType;
     use crate::common::base::Bytes;
+    use arrow::datatypes::DataType as ArrowDataType;
     use serde_json;
 
     use super::*;

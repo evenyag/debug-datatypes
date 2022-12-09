@@ -78,25 +78,3 @@ impl DataType for ListType {
         false
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::value::ListValue;
-
-    #[test]
-    fn test_list_type() {
-        let t = ListType::new(ConcreteDataType::boolean_datatype());
-        assert_eq!("List", t.name());
-        assert_eq!(LogicalTypeId::List, t.logical_type_id());
-        assert_eq!(
-            Value::List(ListValue::new(None, ConcreteDataType::boolean_datatype())),
-            t.default_value()
-        );
-        assert_eq!(
-            ArrowDataType::List(Box::new(Field::new("item", ArrowDataType::Boolean, true))),
-            t.as_arrow_type()
-        );
-        assert_eq!(ConcreteDataType::boolean_datatype(), *t.item_type());
-    }
-}

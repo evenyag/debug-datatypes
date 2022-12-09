@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use crate::common::time::timestamp::TimeUnit;
+use crate::common::time::Timestamp;
 use arrow::datatypes::{
     DataType as ArrowDataType, TimeUnit as ArrowTimeUnit,
     TimestampMicrosecondType as ArrowTimestampMicrosecondType,
@@ -19,8 +21,6 @@ use arrow::datatypes::{
     TimestampNanosecondType as ArrowTimestampNanosecondType,
     TimestampSecondType as ArrowTimestampSecondType,
 };
-use crate::common::time::timestamp::TimeUnit;
-use crate::common::time::Timestamp;
 use enum_dispatch::enum_dispatch;
 use paste::paste;
 use serde::{Deserialize, Serialize};
@@ -150,28 +150,3 @@ impl_data_type_for_timestamp!(Nanosecond);
 impl_data_type_for_timestamp!(Second);
 impl_data_type_for_timestamp!(Millisecond);
 impl_data_type_for_timestamp!(Microsecond);
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_timestamp_type_unit() {
-        assert_eq!(
-            TimeUnit::Second,
-            TimestampType::Second(TimestampSecondType).unit()
-        );
-        assert_eq!(
-            TimeUnit::Millisecond,
-            TimestampType::Millisecond(TimestampMillisecondType).unit()
-        );
-        assert_eq!(
-            TimeUnit::Microsecond,
-            TimestampType::Microsecond(TimestampMicrosecondType).unit()
-        );
-        assert_eq!(
-            TimeUnit::Nanosecond,
-            TimestampType::Nanosecond(TimestampNanosecondType).unit()
-        );
-    }
-}

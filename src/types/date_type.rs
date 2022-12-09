@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use arrow::datatypes::{DataType as ArrowDataType, Date32Type};
 use crate::common::time::Date;
+use arrow::datatypes::{DataType as ArrowDataType, Date32Type};
 use serde::{Deserialize, Serialize};
 use snafu::OptionExt;
 
