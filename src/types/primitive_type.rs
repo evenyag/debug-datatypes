@@ -27,7 +27,8 @@ use crate::scalars::{Scalar, ScalarRef, ScalarVectorBuilder};
 use crate::type_id::LogicalTypeId;
 // use crate::types::{DateTimeType, DateType};
 use crate::value::{Value, ValueRef};
-use crate::vectors::{MutableVector, PrimitiveVector, PrimitiveVectorBuilder, Vector};
+use crate::vectors::{PrimitiveVector, PrimitiveVectorBuilder, Vector};
+// use crate::vectors::{MutableVector, PrimitiveVector, PrimitiveVectorBuilder, Vector};
 
 /// Data types that can be used as arrow's native type.
 pub trait NativeType: ArrowNativeType + NumCast {}
@@ -266,9 +267,9 @@ macro_rules! define_non_timestamp_primitive {
                 ArrowDataType::$TypeId
             }
 
-            fn create_mutable_vector(&self, capacity: usize) -> Box<dyn MutableVector> {
-                Box::new(PrimitiveVectorBuilder::<$DataType>::with_capacity(capacity))
-            }
+            // fn create_mutable_vector(&self, capacity: usize) -> Box<dyn MutableVector> {
+            //     Box::new(PrimitiveVectorBuilder::<$DataType>::with_capacity(capacity))
+            // }
 
             fn is_timestamp_compatible(&self) -> bool {
                 false
@@ -307,9 +308,9 @@ impl DataType for Int64Type {
         ArrowDataType::Int64
     }
 
-    fn create_mutable_vector(&self, capacity: usize) -> Box<dyn MutableVector> {
-        Box::new(PrimitiveVectorBuilder::<Int64Type>::with_capacity(capacity))
-    }
+    // fn create_mutable_vector(&self, capacity: usize) -> Box<dyn MutableVector> {
+    //     Box::new(PrimitiveVectorBuilder::<Int64Type>::with_capacity(capacity))
+    // }
 
     fn is_timestamp_compatible(&self) -> bool {
         true

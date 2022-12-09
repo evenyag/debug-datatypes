@@ -23,7 +23,7 @@ use crate::types::{
 use crate::value::{Value};
 // use crate::value::{ListValue, ListValueRef, Value};
 use crate::vectors::{
-    MutableVector,
+    // MutableVector,
     // BinaryVector, BooleanVector, DateTimeVector, DateVector, ListVector, MutableVector,
     PrimitiveVector, Vector,
     // PrimitiveVector, StringVector, Vector,
@@ -132,7 +132,8 @@ where
 }
 
 /// A trait over all vector builders.
-pub trait ScalarVectorBuilder: MutableVector {
+pub trait ScalarVectorBuilder {
+// pub trait ScalarVectorBuilder: MutableVector {
     type VectorType: ScalarVector<Builder = Self>;
 
     /// Create a new builder with initial `capacity`.

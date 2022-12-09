@@ -20,7 +20,8 @@ use serde::{Deserialize, Serialize};
 use crate::data_type::{DataType, DataTypeRef};
 use crate::type_id::LogicalTypeId;
 use crate::value::Value;
-use crate::vectors::{MutableVector, NullVectorBuilder};
+use crate::vectors::{NullVectorBuilder};
+// use crate::vectors::{MutableVector, NullVectorBuilder};
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct NullType;
@@ -48,9 +49,9 @@ impl DataType for NullType {
         ArrowDataType::Null
     }
 
-    fn create_mutable_vector(&self, _capacity: usize) -> Box<dyn MutableVector> {
-        Box::new(NullVectorBuilder::default())
-    }
+    // fn create_mutable_vector(&self, _capacity: usize) -> Box<dyn MutableVector> {
+    //     Box::new(NullVectorBuilder::default())
+    // }
 
     fn is_timestamp_compatible(&self) -> bool {
         false

@@ -31,7 +31,7 @@ use crate::types::{
     UInt16Type, UInt32Type, UInt64Type, UInt8Type, WrapperType,
 };
 use crate::value::{Value, ValueRef};
-use crate::vectors::{self, MutableVector, Vector, VectorRef};
+use crate::vectors::{self, Vector, VectorRef};
 // use crate::vectors::{self, MutableVector, Validity, Vector, VectorRef};
 
 pub type UInt8Vector = PrimitiveVector<UInt8Type>;
@@ -288,46 +288,46 @@ pub struct PrimitiveVectorBuilder<T: LogicalPrimitiveType> {
     mutable_array: PrimitiveBuilder<T::ArrowPrimitive>,
 }
 
-impl<T: LogicalPrimitiveType> MutableVector for PrimitiveVectorBuilder<T> {
-    fn data_type(&self) -> ConcreteDataType {
-        T::build_data_type()
-    }
+// impl<T: LogicalPrimitiveType> MutableVector for PrimitiveVectorBuilder<T> {
+//     fn data_type(&self) -> ConcreteDataType {
+//         T::build_data_type()
+//     }
 
-    fn len(&self) -> usize {
-        self.mutable_array.len()
-    }
+//     fn len(&self) -> usize {
+//         self.mutable_array.len()
+//     }
 
-    fn as_any(&self) -> &dyn Any {
-        self
-    }
+//     fn as_any(&self) -> &dyn Any {
+//         self
+//     }
 
-    fn as_mut_any(&mut self) -> &mut dyn Any {
-        self
-    }
+//     fn as_mut_any(&mut self) -> &mut dyn Any {
+//         self
+//     }
 
-    fn to_vector(&mut self) -> VectorRef {
-        Arc::new(self.finish())
-    }
+//     fn to_vector(&mut self) -> VectorRef {
+//         Arc::new(self.finish())
+//     }
 
-    fn push_value_ref(&mut self, value: ValueRef) -> Result<()> {
-        let primitive = T::cast_value_ref(value)?;
-        match primitive {
-            Some(v) => self.mutable_array.append_value(v.into_native()),
-            None => self.mutable_array.append_null(),
-        }
-        Ok(())
-    }
+//     fn push_value_ref(&mut self, value: ValueRef) -> Result<()> {
+//         let primitive = T::cast_value_ref(value)?;
+//         match primitive {
+//             Some(v) => self.mutable_array.append_value(v.into_native()),
+//             None => self.mutable_array.append_null(),
+//         }
+//         Ok(())
+//     }
 
-    fn extend_slice_of(&mut self, vector: &dyn Vector, offset: usize, length: usize) -> Result<()> {
-        let primitive = T::cast_vector(vector)?;
-        // Slice the underlying array to avoid creating a new Arc.
-        let slice = primitive.get_slice(offset, length);
-        for v in slice.iter_data() {
-            self.push(v);
-        }
-        Ok(())
-    }
-}
+//     fn extend_slice_of(&mut self, vector: &dyn Vector, offset: usize, length: usize) -> Result<()> {
+//         let primitive = T::cast_vector(vector)?;
+//         // Slice the underlying array to avoid creating a new Arc.
+//         let slice = primitive.get_slice(offset, length);
+//         for v in slice.iter_data() {
+//             self.push(v);
+//         }
+//         Ok(())
+//     }
+// }
 
 impl<T> ScalarVectorBuilder for PrimitiveVectorBuilder<T>
 where

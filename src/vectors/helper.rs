@@ -33,7 +33,7 @@ use crate::vectors::{
     // BinaryVector, BooleanVector, DateTimeVector, DateVector, Float32Vector, Float64Vector,
     Int16Vector, Int32Vector, Int64Vector, Int8Vector,
     // Int16Vector, Int32Vector, Int64Vector, Int8Vector, ListVector, ListVectorBuilder,
-    MutableVector, NullVector,
+    NullVector,
     // MutableVector, NullVector, StringVector, TimestampMicrosecondVector,
     UInt16Vector,
     // TimestampMillisecondVector, TimestampNanosecondVector, TimestampSecondVector, UInt16Vector,

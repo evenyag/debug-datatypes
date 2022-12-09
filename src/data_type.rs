@@ -30,7 +30,7 @@ use crate::types::{
     UInt16Type, UInt32Type, UInt64Type, UInt8Type,
 };
 use crate::value::Value;
-use crate::vectors::MutableVector;
+// use crate::vectors::MutableVector;
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[enum_dispatch::enum_dispatch(DataType)]
@@ -263,8 +263,8 @@ pub trait DataType: std::fmt::Debug + Send + Sync {
     /// Convert this type as [arrow::datatypes::DataType].
     fn as_arrow_type(&self) -> ArrowDataType;
 
-    /// Creates a mutable vector with given `capacity` of this type.
-    fn create_mutable_vector(&self, capacity: usize) -> Box<dyn MutableVector>;
+    // /// Creates a mutable vector with given `capacity` of this type.
+    // fn create_mutable_vector(&self, capacity: usize) -> Box<dyn MutableVector>;
 
     /// Returns true if the data type is compatible with timestamp type so we can
     /// use it as a timestamp.

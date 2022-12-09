@@ -24,7 +24,7 @@ use crate::error::{self, Result};
 // use crate::serialize::Serializable;
 use crate::types::NullType;
 use crate::value::{Value, ValueRef};
-use crate::vectors::{self, MutableVector, Vector, VectorRef};
+use crate::vectors::{self, Vector, VectorRef};
 // use crate::vectors::{self, MutableVector, Validity, Vector, VectorRef};
 
 /// A vector where all elements are nulls.
@@ -141,63 +141,63 @@ pub struct NullVectorBuilder {
     length: usize,
 }
 
-impl MutableVector for NullVectorBuilder {
-    fn data_type(&self) -> ConcreteDataType {
-        ConcreteDataType::null_datatype()
-    }
+// impl MutableVector for NullVectorBuilder {
+//     fn data_type(&self) -> ConcreteDataType {
+//         ConcreteDataType::null_datatype()
+//     }
 
-    fn len(&self) -> usize {
-        self.length
-    }
+//     fn len(&self) -> usize {
+//         self.length
+//     }
 
-    fn as_any(&self) -> &dyn Any {
-        self
-    }
+//     fn as_any(&self) -> &dyn Any {
+//         self
+//     }
 
-    fn as_mut_any(&mut self) -> &mut dyn Any {
-        self
-    }
+//     fn as_mut_any(&mut self) -> &mut dyn Any {
+//         self
+//     }
 
-    fn to_vector(&mut self) -> VectorRef {
-        let vector = Arc::new(NullVector::new(self.length));
-        self.length = 0;
-        vector
-    }
+//     fn to_vector(&mut self) -> VectorRef {
+//         let vector = Arc::new(NullVector::new(self.length));
+//         self.length = 0;
+//         vector
+//     }
 
-    fn push_value_ref(&mut self, value: ValueRef) -> Result<()> {
-        ensure!(
-            value.is_null(),
-            error::CastTypeSnafu {
-                msg: format!("Failed to cast value ref {:?} to null", value),
-            }
-        );
+//     fn push_value_ref(&mut self, value: ValueRef) -> Result<()> {
+//         ensure!(
+//             value.is_null(),
+//             error::CastTypeSnafu {
+//                 msg: format!("Failed to cast value ref {:?} to null", value),
+//             }
+//         );
 
-        self.length += 1;
-        Ok(())
-    }
+//         self.length += 1;
+//         Ok(())
+//     }
 
-    fn extend_slice_of(&mut self, vector: &dyn Vector, offset: usize, length: usize) -> Result<()> {
-        vector
-            .as_any()
-            .downcast_ref::<NullVector>()
-            .with_context(|| error::CastTypeSnafu {
-                msg: format!(
-                    "Failed to convert vector from {} to NullVector",
-                    vector.vector_type_name()
-                ),
-            })?;
-        assert!(
-            offset + length <= vector.len(),
-            "offset {} + length {} must less than {}",
-            offset,
-            length,
-            vector.len()
-        );
+//     fn extend_slice_of(&mut self, vector: &dyn Vector, offset: usize, length: usize) -> Result<()> {
+//         vector
+//             .as_any()
+//             .downcast_ref::<NullVector>()
+//             .with_context(|| error::CastTypeSnafu {
+//                 msg: format!(
+//                     "Failed to convert vector from {} to NullVector",
+//                     vector.vector_type_name()
+//                 ),
+//             })?;
+//         assert!(
+//             offset + length <= vector.len(),
+//             "offset {} + length {} must less than {}",
+//             offset,
+//             length,
+//             vector.len()
+//         );
 
-        self.length += length;
-        Ok(())
-    }
-}
+//         self.length += length;
+//         Ok(())
+//     }
+// }
 
 pub(crate) fn replicate_null(vector: &NullVector, offsets: &[usize]) -> VectorRef {
     assert_eq!(offsets.len(), vector.len());
