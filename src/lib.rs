@@ -15,14 +15,13 @@
 #![feature(generic_associated_types)]
 #![feature(assert_matches)]
 
-pub mod arrow_array;
 pub mod data_type;
 pub mod error;
 pub mod macros;
 pub mod prelude;
 mod scalars;
 // pub mod schema;
-pub mod serialize;
+// pub mod serialize;
 // mod timestamp;
 pub mod type_id;
 pub mod types;

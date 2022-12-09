@@ -25,7 +25,7 @@ use snafu::OptionExt;
 use crate::data_type::ConcreteDataType;
 use crate::error::{self, Result};
 use crate::scalars::{Scalar, ScalarRef, ScalarVector, ScalarVectorBuilder};
-use crate::serialize::Serializable;
+// use crate::serialize::Serializable;
 use crate::types::{
     Float32Type, Float64Type, Int16Type, Int32Type, Int64Type, Int8Type, LogicalPrimitiveType,
     UInt16Type, UInt32Type, UInt64Type, UInt8Type, WrapperType,
@@ -248,21 +248,21 @@ impl<T: LogicalPrimitiveType> ScalarVector for PrimitiveVector<T> {
     }
 }
 
-impl<T: LogicalPrimitiveType> Serializable for PrimitiveVector<T> {
-    fn serialize_to_json(&self) -> Result<Vec<JsonValue>> {
-        let res = self
-            .iter_data()
-            .map(|v| match v {
-                None => serde_json::Value::Null,
-                // use WrapperType's Into<serde_json::Value> bound instead of
-                // serde_json::to_value to facilitate customized serialization
-                // for WrapperType
-                Some(v) => v.into(),
-            })
-            .collect::<Vec<_>>();
-        Ok(res)
-    }
-}
+// impl<T: LogicalPrimitiveType> Serializable for PrimitiveVector<T> {
+//     fn serialize_to_json(&self) -> Result<Vec<JsonValue>> {
+//         let res = self
+//             .iter_data()
+//             .map(|v| match v {
+//                 None => serde_json::Value::Null,
+//                 // use WrapperType's Into<serde_json::Value> bound instead of
+//                 // serde_json::to_value to facilitate customized serialization
+//                 // for WrapperType
+//                 Some(v) => v.into(),
+//             })
+//             .collect::<Vec<_>>();
+//         Ok(res)
+//     }
+// }
 
 impl<T: LogicalPrimitiveType> PartialEq for PrimitiveVector<T> {
     fn eq(&self, other: &PrimitiveVector<T>) -> bool {

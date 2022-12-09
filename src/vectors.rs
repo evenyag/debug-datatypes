@@ -21,7 +21,7 @@ use snafu::ensure;
 
 use crate::data_type::ConcreteDataType;
 use crate::error::{self, Result};
-use crate::serialize::Serializable;
+// use crate::serialize::Serializable;
 use crate::value::{Value, ValueRef};
 
 // mod binary;
@@ -62,7 +62,8 @@ pub use primitive::{
 // TODO(yingwen): arrow 28.0 implements Clone for all arrays, we could upgrade to it and simplify
 // some codes in methods such as `to_arrow_array()` and `to_boxed_arrow_array()`.
 /// Vector of data values.
-pub trait Vector: Send + Sync + Serializable + Debug {
+pub trait Vector: Send + Sync + Debug {
+// pub trait Vector: Send + Sync + Serializable + Debug {
     /// Returns the data type of the vector.
     ///
     /// This may require heap allocation.

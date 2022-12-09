@@ -21,7 +21,7 @@ use snafu::{ensure, OptionExt};
 
 use crate::data_type::ConcreteDataType;
 use crate::error::{self, Result};
-use crate::serialize::Serializable;
+// use crate::serialize::Serializable;
 use crate::types::NullType;
 use crate::value::{Value, ValueRef};
 use crate::vectors::{self, MutableVector, Vector, VectorRef};
@@ -126,13 +126,13 @@ impl fmt::Debug for NullVector {
     }
 }
 
-impl Serializable for NullVector {
-    fn serialize_to_json(&self) -> Result<Vec<serde_json::Value>> {
-        Ok(std::iter::repeat(serde_json::Value::Null)
-            .take(self.len())
-            .collect())
-    }
-}
+// impl Serializable for NullVector {
+//     fn serialize_to_json(&self) -> Result<Vec<serde_json::Value>> {
+//         Ok(std::iter::repeat(serde_json::Value::Null)
+//             .take(self.len())
+//             .collect())
+//     }
+// }
 
 vectors::impl_try_from_arrow_array_for_vector!(NullArray, NullVector);
 
