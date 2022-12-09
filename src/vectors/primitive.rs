@@ -135,56 +135,56 @@ impl<T: LogicalPrimitiveType> Vector for PrimitiveVector<T> {
         self.array.len()
     }
 
-    fn to_arrow_array(&self) -> ArrayRef {
-        let data = self.to_array_data();
-        Arc::new(PrimitiveArray::<T::ArrowPrimitive>::from(data))
-    }
-
-    fn to_boxed_arrow_array(&self) -> Box<dyn Array> {
-        let data = self.to_array_data();
-        Box::new(PrimitiveArray::<T::ArrowPrimitive>::from(data))
-    }
-
-    // fn validity(&self) -> Validity {
-    //     vectors::impl_validity_for_vector!(self.array)
+    // fn to_arrow_array(&self) -> ArrayRef {
+    //     let data = self.to_array_data();
+    //     Arc::new(PrimitiveArray::<T::ArrowPrimitive>::from(data))
     // }
 
-    fn memory_size(&self) -> usize {
-        self.array.get_buffer_memory_size()
-    }
+    // fn to_boxed_arrow_array(&self) -> Box<dyn Array> {
+    //     let data = self.to_array_data();
+    //     Box::new(PrimitiveArray::<T::ArrowPrimitive>::from(data))
+    // }
 
-    fn null_count(&self) -> usize {
-        self.array.null_count()
-    }
+    // // fn validity(&self) -> Validity {
+    // //     vectors::impl_validity_for_vector!(self.array)
+    // // }
 
-    fn is_null(&self, row: usize) -> bool {
-        self.array.is_null(row)
-    }
+    // fn memory_size(&self) -> usize {
+    //     self.array.get_buffer_memory_size()
+    // }
 
-    fn slice(&self, offset: usize, length: usize) -> VectorRef {
-        let data = self.array.data().slice(offset, length);
-        Arc::new(Self::from_array_data(data))
-    }
+    // fn null_count(&self) -> usize {
+    //     self.array.null_count()
+    // }
 
-    fn get(&self, index: usize) -> Value {
-        if self.array.is_valid(index) {
-            // Safety: The index have been checked by `is_valid()`.
-            let wrapper = unsafe { T::Wrapper::from_native(self.array.value_unchecked(index)) };
-            wrapper.into()
-        } else {
-            Value::Null
-        }
-    }
+    // fn is_null(&self, row: usize) -> bool {
+    //     self.array.is_null(row)
+    // }
 
-    fn get_ref(&self, index: usize) -> ValueRef {
-        if self.array.is_valid(index) {
-            // Safety: The index have been checked by `is_valid()`.
-            let wrapper = unsafe { T::Wrapper::from_native(self.array.value_unchecked(index)) };
-            wrapper.into()
-        } else {
-            ValueRef::Null
-        }
-    }
+    // fn slice(&self, offset: usize, length: usize) -> VectorRef {
+    //     let data = self.array.data().slice(offset, length);
+    //     Arc::new(Self::from_array_data(data))
+    // }
+
+    // fn get(&self, index: usize) -> Value {
+    //     if self.array.is_valid(index) {
+    //         // Safety: The index have been checked by `is_valid()`.
+    //         let wrapper = unsafe { T::Wrapper::from_native(self.array.value_unchecked(index)) };
+    //         wrapper.into()
+    //     } else {
+    //         Value::Null
+    //     }
+    // }
+
+    // fn get_ref(&self, index: usize) -> ValueRef {
+    //     if self.array.is_valid(index) {
+    //         // Safety: The index have been checked by `is_valid()`.
+    //         let wrapper = unsafe { T::Wrapper::from_native(self.array.value_unchecked(index)) };
+    //         wrapper.into()
+    //     } else {
+    //         ValueRef::Null
+    //     }
+    // }
 }
 
 impl<T: LogicalPrimitiveType> fmt::Debug for PrimitiveVector<T> {
@@ -356,39 +356,39 @@ where
     }
 }
 
-pub(crate) fn replicate_primitive<T: LogicalPrimitiveType>(
-    vector: &PrimitiveVector<T>,
-    offsets: &[usize],
-) -> PrimitiveVector<T> {
-    assert_eq!(offsets.len(), vector.len());
+// pub(crate) fn replicate_primitive<T: LogicalPrimitiveType>(
+//     vector: &PrimitiveVector<T>,
+//     offsets: &[usize],
+// ) -> PrimitiveVector<T> {
+//     assert_eq!(offsets.len(), vector.len());
 
-    if offsets.is_empty() {
-        return vector.get_slice(0, 0);
-    }
+//     if offsets.is_empty() {
+//         return vector.get_slice(0, 0);
+//     }
 
-    let mut builder = PrimitiveVectorBuilder::<T>::with_capacity(*offsets.last().unwrap() as usize);
+//     let mut builder = PrimitiveVectorBuilder::<T>::with_capacity(*offsets.last().unwrap() as usize);
 
-    let mut previous_offset = 0;
+//     let mut previous_offset = 0;
 
-    for (offset, value) in offsets.iter().zip(vector.array.iter()) {
-        let repeat_times = *offset - previous_offset;
-        match value {
-            Some(data) => {
-                unsafe {
-                    // Safety: std::iter::Repeat and std::iter::Take implement TrustedLen.
-                    builder
-                        .mutable_array
-                        .append_trusted_len_iter(std::iter::repeat(data).take(repeat_times));
-                }
-            }
-            None => {
-                builder.mutable_array.append_nulls(repeat_times);
-            }
-        }
-        previous_offset = *offset;
-    }
-    builder.finish()
-}
+//     for (offset, value) in offsets.iter().zip(vector.array.iter()) {
+//         let repeat_times = *offset - previous_offset;
+//         match value {
+//             Some(data) => {
+//                 unsafe {
+//                     // Safety: std::iter::Repeat and std::iter::Take implement TrustedLen.
+//                     builder
+//                         .mutable_array
+//                         .append_trusted_len_iter(std::iter::repeat(data).take(repeat_times));
+//                 }
+//             }
+//             None => {
+//                 builder.mutable_array.append_nulls(repeat_times);
+//             }
+//         }
+//         previous_offset = *offset;
+//     }
+//     builder.finish()
+// }
 
 // #[cfg(test)]
 // mod tests {

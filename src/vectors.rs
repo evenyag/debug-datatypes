@@ -83,66 +83,66 @@ pub trait Vector: Send + Sync + Debug {
         self.len() == 0
     }
 
-    /// Convert this vector to a new arrow [ArrayRef].
-    fn to_arrow_array(&self) -> ArrayRef;
+    // /// Convert this vector to a new arrow [ArrayRef].
+    // fn to_arrow_array(&self) -> ArrayRef;
 
-    /// Convert this vector to a new boxed arrow [Array].
-    fn to_boxed_arrow_array(&self) -> Box<dyn Array>;
+    // /// Convert this vector to a new boxed arrow [Array].
+    // fn to_boxed_arrow_array(&self) -> Box<dyn Array>;
 
-    // /// Returns the validity of the Array.
-    // fn validity(&self) -> Validity;
+    // // /// Returns the validity of the Array.
+    // // fn validity(&self) -> Validity;
 
-    /// Returns the memory size of vector.
-    fn memory_size(&self) -> usize;
+    // /// Returns the memory size of vector.
+    // fn memory_size(&self) -> usize;
 
-    /// The number of null slots on this [`Vector`].
-    /// # Implementation
-    /// This is `O(1)`.
-    fn null_count(&self) -> usize;
+    // /// The number of null slots on this [`Vector`].
+    // /// # Implementation
+    // /// This is `O(1)`.
+    // fn null_count(&self) -> usize;
 
-    /// Returns true when it's a ConstantColumn
-    fn is_const(&self) -> bool {
-        false
-    }
+    // /// Returns true when it's a ConstantColumn
+    // fn is_const(&self) -> bool {
+    //     false
+    // }
 
-    /// Returns whether row is null.
-    fn is_null(&self, row: usize) -> bool;
+    // /// Returns whether row is null.
+    // fn is_null(&self, row: usize) -> bool;
 
-    /// If the only value vector can contain is NULL.
-    fn only_null(&self) -> bool {
-        self.null_count() == self.len()
-    }
+    // /// If the only value vector can contain is NULL.
+    // fn only_null(&self) -> bool {
+    //     self.null_count() == self.len()
+    // }
 
-    /// Slices the `Vector`, returning a new `VectorRef`.
-    ///
-    /// # Panics
-    /// This function panics if `offset + length > self.len()`.
-    fn slice(&self, offset: usize, length: usize) -> VectorRef;
+    // /// Slices the `Vector`, returning a new `VectorRef`.
+    // ///
+    // /// # Panics
+    // /// This function panics if `offset + length > self.len()`.
+    // fn slice(&self, offset: usize, length: usize) -> VectorRef;
 
-    /// Returns the clone of value at `index`.
-    ///
-    /// # Panics
-    /// Panic if `index` is out of bound.
-    fn get(&self, index: usize) -> Value;
+    // /// Returns the clone of value at `index`.
+    // ///
+    // /// # Panics
+    // /// Panic if `index` is out of bound.
+    // fn get(&self, index: usize) -> Value;
 
-    /// Returns the clone of value at `index` or error if `index`
-    /// is out of bound.
-    fn try_get(&self, index: usize) -> Result<Value> {
-        ensure!(
-            index < self.len(),
-            error::BadArrayAccessSnafu {
-                index,
-                size: self.len()
-            }
-        );
-        Ok(self.get(index))
-    }
+    // /// Returns the clone of value at `index` or error if `index`
+    // /// is out of bound.
+    // fn try_get(&self, index: usize) -> Result<Value> {
+    //     ensure!(
+    //         index < self.len(),
+    //         error::BadArrayAccessSnafu {
+    //             index,
+    //             size: self.len()
+    //         }
+    //     );
+    //     Ok(self.get(index))
+    // }
 
-    /// Returns the reference of value at `index`.
-    ///
-    /// # Panics
-    /// Panic if `index` is out of bound.
-    fn get_ref(&self, index: usize) -> ValueRef;
+    // /// Returns the reference of value at `index`.
+    // ///
+    // /// # Panics
+    // /// Panic if `index` is out of bound.
+    // fn get_ref(&self, index: usize) -> ValueRef;
 }
 
 pub type VectorRef = Arc<dyn Vector>;

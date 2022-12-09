@@ -74,50 +74,50 @@ impl Vector for NullVector {
         self.array.len()
     }
 
-    fn to_arrow_array(&self) -> ArrayRef {
-        // TODO(yingwen): Replaced by clone after upgrading to arrow 28.0.
-        let data = self.to_array_data();
-        Arc::new(NullArray::from(data))
-    }
-
-    fn to_boxed_arrow_array(&self) -> Box<dyn Array> {
-        let data = self.to_array_data();
-        Box::new(NullArray::from(data))
-    }
-
-    // fn validity(&self) -> Validity {
-    //     Validity::all_null(self.array.len())
+    // fn to_arrow_array(&self) -> ArrayRef {
+    //     // TODO(yingwen): Replaced by clone after upgrading to arrow 28.0.
+    //     let data = self.to_array_data();
+    //     Arc::new(NullArray::from(data))
     // }
 
-    fn memory_size(&self) -> usize {
-        0
-    }
+    // fn to_boxed_arrow_array(&self) -> Box<dyn Array> {
+    //     let data = self.to_array_data();
+    //     Box::new(NullArray::from(data))
+    // }
 
-    fn null_count(&self) -> usize {
-        self.array.null_count()
-    }
+    // // fn validity(&self) -> Validity {
+    // //     Validity::all_null(self.array.len())
+    // // }
 
-    fn is_null(&self, _row: usize) -> bool {
-        true
-    }
+    // fn memory_size(&self) -> usize {
+    //     0
+    // }
 
-    fn only_null(&self) -> bool {
-        true
-    }
+    // fn null_count(&self) -> usize {
+    //     self.array.null_count()
+    // }
 
-    fn slice(&self, _offset: usize, length: usize) -> VectorRef {
-        Arc::new(Self::new(length))
-    }
+    // fn is_null(&self, _row: usize) -> bool {
+    //     true
+    // }
 
-    fn get(&self, _index: usize) -> Value {
-        // Skips bound check for null array.
-        Value::Null
-    }
+    // fn only_null(&self) -> bool {
+    //     true
+    // }
 
-    fn get_ref(&self, _index: usize) -> ValueRef {
-        // Skips bound check for null array.
-        ValueRef::Null
-    }
+    // fn slice(&self, _offset: usize, length: usize) -> VectorRef {
+    //     Arc::new(Self::new(length))
+    // }
+
+    // fn get(&self, _index: usize) -> Value {
+    //     // Skips bound check for null array.
+    //     Value::Null
+    // }
+
+    // fn get_ref(&self, _index: usize) -> ValueRef {
+    //     // Skips bound check for null array.
+    //     ValueRef::Null
+    // }
 }
 
 impl fmt::Debug for NullVector {
@@ -199,15 +199,15 @@ pub struct NullVectorBuilder {
 //     }
 // }
 
-pub(crate) fn replicate_null(vector: &NullVector, offsets: &[usize]) -> VectorRef {
-    assert_eq!(offsets.len(), vector.len());
+// pub(crate) fn replicate_null(vector: &NullVector, offsets: &[usize]) -> VectorRef {
+//     assert_eq!(offsets.len(), vector.len());
 
-    if offsets.is_empty() {
-        return vector.slice(0, 0);
-    }
+//     if offsets.is_empty() {
+//         return vector.slice(0, 0);
+//     }
 
-    Arc::new(NullVector::new(*offsets.last().unwrap()))
-}
+//     Arc::new(NullVector::new(*offsets.last().unwrap()))
+// }
 
 // #[cfg(test)]
 // mod tests {
