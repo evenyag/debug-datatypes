@@ -196,7 +196,10 @@ macro_rules! define_logical_primitive_type {
         // `struct DataType;` to ensure the serialized JSON string is compatible with previous
         // implementation.
         #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
-        pub struct $DataType {}
+        pub struct $DataType {
+            // Enlarge size of data type.
+            payload: String,
+        }
 
         impl LogicalPrimitiveType for $DataType {
             type ArrowPrimitive = arrow::datatypes::$DataType;
