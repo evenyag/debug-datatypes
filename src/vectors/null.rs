@@ -16,7 +16,7 @@ use std::any::Any;
 use std::fmt;
 use std::sync::Arc;
 
-use arrow::array::{Array, ArrayData, ArrayRef, NullArray};
+// use arrow::array::{Array, ArrayData, ArrayRef, NullArray};
 use snafu::{ensure, OptionExt};
 
 use crate::data_type::ConcreteDataType;
@@ -30,7 +30,8 @@ use crate::vectors::{self, Vector, VectorRef};
 /// A vector where all elements are nulls.
 #[derive(PartialEq)]
 pub struct NullVector {
-    array: NullArray,
+    // array: NullArray,
+    len: usize,
 }
 
 // TODO(yingwen): Support null vector with other logical types.
@@ -38,24 +39,25 @@ impl NullVector {
     /// Create a new `NullVector` with `n` elements.
     pub fn new(n: usize) -> Self {
         Self {
-            array: NullArray::new(n),
+            len: n,
+            // array: NullArray::new(n),
         }
     }
 
-    pub(crate) fn as_arrow(&self) -> &dyn Array {
-        &self.array
-    }
+    // pub(crate) fn as_arrow(&self) -> &dyn Array {
+    //     &self.array
+    // }
 
-    fn to_array_data(&self) -> ArrayData {
-        self.array.data().clone()
-    }
+    // fn to_array_data(&self) -> ArrayData {
+    //     self.array.data().clone()
+    // }
 }
 
-impl From<NullArray> for NullVector {
-    fn from(array: NullArray) -> Self {
-        Self { array }
-    }
-}
+// impl From<NullArray> for NullVector {
+//     fn from(array: NullArray) -> Self {
+//         Self { array }
+//     }
+// }
 
 impl Vector for NullVector {
     fn data_type(&self) -> ConcreteDataType {
@@ -71,7 +73,8 @@ impl Vector for NullVector {
     }
 
     fn len(&self) -> usize {
-        self.array.len()
+        self.len
+        // self.array.len()
     }
 
     // fn to_arrow_array(&self) -> ArrayRef {
