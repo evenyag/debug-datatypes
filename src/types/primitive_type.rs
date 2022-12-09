@@ -25,7 +25,8 @@ use crate::data_type::{ConcreteDataType, DataType};
 use crate::error::{self, Result};
 use crate::scalars::{Scalar, ScalarRef, ScalarVectorBuilder};
 use crate::type_id::LogicalTypeId;
-use crate::types::{DateTimeType, DateType};
+use crate::types::{DateTimeType};
+// use crate::types::{DateTimeType, DateType};
 use crate::value::{Value, ValueRef};
 use crate::vectors::{MutableVector, PrimitiveVector, PrimitiveVectorBuilder, Vector};
 
@@ -162,18 +163,18 @@ impl_wrapper!(i64, Int64Type);
 impl_wrapper!(f32, Float32Type);
 impl_wrapper!(f64, Float64Type);
 
-impl WrapperType for Date {
-    type LogicalType = DateType;
-    type Native = i32;
+// impl WrapperType for Date {
+//     type LogicalType = DateType;
+//     type Native = i32;
 
-    fn from_native(value: i32) -> Self {
-        Date::new(value)
-    }
+//     fn from_native(value: i32) -> Self {
+//         Date::new(value)
+//     }
 
-    fn into_native(self) -> i32 {
-        self.val()
-    }
-}
+//     fn into_native(self) -> i32 {
+//         self.val()
+//     }
+// }
 
 impl WrapperType for DateTime {
     type LogicalType = DateTimeType;

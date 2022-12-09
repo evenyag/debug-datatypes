@@ -22,7 +22,8 @@ use crate::types::{
 };
 use crate::value::{ListValue, ListValueRef, Value};
 use crate::vectors::{
-    BinaryVector, BooleanVector, DateTimeVector, DateVector, ListVector, MutableVector,
+    BinaryVector, BooleanVector, DateTimeVector, ListVector, MutableVector,
+    // BinaryVector, BooleanVector, DateTimeVector, DateVector, ListVector, MutableVector,
     PrimitiveVector, StringVector, Vector,
 };
 
@@ -256,26 +257,26 @@ impl<'a> ScalarRef<'a> for &'a [u8] {
     }
 }
 
-impl Scalar for Date {
-    type VectorType = DateVector;
-    type RefType<'a> = Date;
+// impl Scalar for Date {
+//     type VectorType = DateVector;
+//     type RefType<'a> = Date;
 
-    fn as_scalar_ref(&self) -> Self::RefType<'_> {
-        *self
-    }
+//     fn as_scalar_ref(&self) -> Self::RefType<'_> {
+//         *self
+//     }
 
-    fn upcast_gat<'short, 'long: 'short>(long: Self::RefType<'long>) -> Self::RefType<'short> {
-        long
-    }
-}
+//     fn upcast_gat<'short, 'long: 'short>(long: Self::RefType<'long>) -> Self::RefType<'short> {
+//         long
+//     }
+// }
 
-impl<'a> ScalarRef<'a> for Date {
-    type ScalarType = Date;
+// impl<'a> ScalarRef<'a> for Date {
+//     type ScalarType = Date;
 
-    fn to_owned_scalar(&self) -> Self::ScalarType {
-        *self
-    }
-}
+//     fn to_owned_scalar(&self) -> Self::ScalarType {
+//         *self
+//     }
+// }
 
 impl Scalar for DateTime {
     type VectorType = DateTimeVector;

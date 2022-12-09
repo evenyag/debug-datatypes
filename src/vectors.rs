@@ -26,7 +26,7 @@ use crate::value::{Value, ValueRef};
 
 mod binary;
 mod boolean;
-mod date;
+// mod date;
 mod datetime;
 mod eq;
 mod helper;
@@ -39,7 +39,7 @@ mod validity;
 
 pub use binary::{BinaryVector, BinaryVectorBuilder};
 pub use boolean::{BooleanVector, BooleanVectorBuilder};
-pub use date::{DateVector, DateVectorBuilder};
+// pub use date::{DateVector, DateVectorBuilder};
 pub use datetime::{DateTimeVector, DateTimeVectorBuilder};
 pub use helper::Helper;
 pub use list::{ListIter, ListVector, ListVectorBuilder};

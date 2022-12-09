@@ -29,7 +29,8 @@ use crate::error::{self, Result};
 use crate::scalars::{Scalar, ScalarVectorBuilder};
 use crate::value::{ListValue, ListValueRef};
 use crate::vectors::{
-    BinaryVector, BooleanVector, DateTimeVector, DateVector, Float32Vector, Float64Vector,
+    BinaryVector, BooleanVector, DateTimeVector, Float32Vector, Float64Vector,
+    // BinaryVector, BooleanVector, DateTimeVector, DateVector, Float32Vector, Float64Vector,
     Int16Vector, Int32Vector, Int64Vector, Int8Vector, ListVector, ListVectorBuilder,
     MutableVector, NullVector, StringVector, TimestampMicrosecondVector,
     TimestampMillisecondVector, TimestampNanosecondVector, TimestampSecondVector, UInt16Vector,
@@ -50,66 +51,66 @@ impl Helper {
         &*(object as *const dyn Vector as *const T)
     }
 
-    pub fn check_get_scalar<T: Scalar>(vector: &VectorRef) -> Result<&<T as Scalar>::VectorType> {
-        let arr = vector
-            .as_any()
-            .downcast_ref::<<T as Scalar>::VectorType>()
-            .with_context(|| error::UnknownVectorSnafu {
-                msg: format!(
-                    "downcast vector error, vector type: {:?}, expected vector: {:?}",
-                    vector.vector_type_name(),
-                    std::any::type_name::<T>(),
-                ),
-            });
-        arr
-    }
+    // pub fn check_get_scalar<T: Scalar>(vector: &VectorRef) -> Result<&<T as Scalar>::VectorType> {
+    //     let arr = vector
+    //         .as_any()
+    //         .downcast_ref::<<T as Scalar>::VectorType>()
+    //         .with_context(|| error::UnknownVectorSnafu {
+    //             msg: format!(
+    //                 "downcast vector error, vector type: {:?}, expected vector: {:?}",
+    //                 vector.vector_type_name(),
+    //                 std::any::type_name::<T>(),
+    //             ),
+    //         });
+    //     arr
+    // }
 
-    pub fn check_get<T: 'static + Vector>(vector: &VectorRef) -> Result<&T> {
-        let arr = vector
-            .as_any()
-            .downcast_ref::<T>()
-            .with_context(|| error::UnknownVectorSnafu {
-                msg: format!(
-                    "downcast vector error, vector type: {:?}, expected vector: {:?}",
-                    vector.vector_type_name(),
-                    std::any::type_name::<T>(),
-                ),
-            });
-        arr
-    }
+    // pub fn check_get<T: 'static + Vector>(vector: &VectorRef) -> Result<&T> {
+    //     let arr = vector
+    //         .as_any()
+    //         .downcast_ref::<T>()
+    //         .with_context(|| error::UnknownVectorSnafu {
+    //             msg: format!(
+    //                 "downcast vector error, vector type: {:?}, expected vector: {:?}",
+    //                 vector.vector_type_name(),
+    //                 std::any::type_name::<T>(),
+    //             ),
+    //         });
+    //     arr
+    // }
 
-    pub fn check_get_mutable_vector<T: 'static + MutableVector>(
-        vector: &mut dyn MutableVector,
-    ) -> Result<&mut T> {
-        let ty = vector.data_type();
-        let arr = vector
-            .as_mut_any()
-            .downcast_mut()
-            .with_context(|| error::UnknownVectorSnafu {
-                msg: format!(
-                    "downcast vector error, vector type: {:?}, expected vector: {:?}",
-                    ty,
-                    std::any::type_name::<T>(),
-                ),
-            });
-        arr
-    }
+    // pub fn check_get_mutable_vector<T: 'static + MutableVector>(
+    //     vector: &mut dyn MutableVector,
+    // ) -> Result<&mut T> {
+    //     let ty = vector.data_type();
+    //     let arr = vector
+    //         .as_mut_any()
+    //         .downcast_mut()
+    //         .with_context(|| error::UnknownVectorSnafu {
+    //             msg: format!(
+    //                 "downcast vector error, vector type: {:?}, expected vector: {:?}",
+    //                 ty,
+    //                 std::any::type_name::<T>(),
+    //             ),
+    //         });
+    //     arr
+    // }
 
-    pub fn check_get_scalar_vector<T: Scalar>(
-        vector: &VectorRef,
-    ) -> Result<&<T as Scalar>::VectorType> {
-        let arr = vector
-            .as_any()
-            .downcast_ref::<<T as Scalar>::VectorType>()
-            .with_context(|| error::UnknownVectorSnafu {
-                msg: format!(
-                    "downcast vector error, vector type: {:?}, expected vector: {:?}",
-                    vector.vector_type_name(),
-                    std::any::type_name::<T>(),
-                ),
-            });
-        arr
-    }
+    // pub fn check_get_scalar_vector<T: Scalar>(
+    //     vector: &VectorRef,
+    // ) -> Result<&<T as Scalar>::VectorType> {
+    //     let arr = vector
+    //         .as_any()
+    //         .downcast_ref::<<T as Scalar>::VectorType>()
+    //         .with_context(|| error::UnknownVectorSnafu {
+    //             msg: format!(
+    //                 "downcast vector error, vector type: {:?}, expected vector: {:?}",
+    //                 vector.vector_type_name(),
+    //                 std::any::type_name::<T>(),
+    //             ),
+    //         });
+    //     arr
+    // }
 
     /// Try to cast an arrow array into vector
     ///
@@ -131,7 +132,7 @@ impl Helper {
             ArrowDataType::Float32 => Arc::new(Float32Vector::try_from_arrow_array(array)?),
             ArrowDataType::Float64 => Arc::new(Float64Vector::try_from_arrow_array(array)?),
             ArrowDataType::Utf8 => Arc::new(StringVector::try_from_arrow_array(array)?),
-            ArrowDataType::Date32 => Arc::new(DateVector::try_from_arrow_array(array)?),
+            // ArrowDataType::Date32 => Arc::new(DateVector::try_from_arrow_array(array)?),
             ArrowDataType::Date64 => Arc::new(DateTimeVector::try_from_arrow_array(array)?),
             ArrowDataType::List(_) => Arc::new(ListVector::try_from_arrow_array(array)?),
             ArrowDataType::Timestamp(unit, _) => match unit {
@@ -147,6 +148,7 @@ impl Helper {
                 }
             },
             ArrowDataType::Float16
+            | ArrowDataType::Date32
             | ArrowDataType::Time32(_)
             | ArrowDataType::Time64(_)
             | ArrowDataType::Duration(_)
@@ -167,18 +169,18 @@ impl Helper {
         })
     }
 
-    /// Try to cast slice of `arrays` to vectors.
-    pub fn try_into_vectors(arrays: &[ArrayRef]) -> Result<Vec<VectorRef>> {
-        arrays.iter().map(Self::try_into_vector).collect()
-    }
+    // /// Try to cast slice of `arrays` to vectors.
+    // pub fn try_into_vectors(arrays: &[ArrayRef]) -> Result<Vec<VectorRef>> {
+    //     arrays.iter().map(Self::try_into_vector).collect()
+    // }
 
-    /// Perform SQL like operation on `names` and a scalar `s`.
-    pub fn like_utf8(names: Vec<String>, s: &str) -> Result<VectorRef> {
-        let array = StringArray::from(names);
+    // /// Perform SQL like operation on `names` and a scalar `s`.
+    // pub fn like_utf8(names: Vec<String>, s: &str) -> Result<VectorRef> {
+    //     let array = StringArray::from(names);
 
-        let filter = comparison::like_utf8_scalar(&array, s).context(error::ArrowComputeSnafu)?;
+    //     let filter = comparison::like_utf8_scalar(&array, s).context(error::ArrowComputeSnafu)?;
 
-        let result = compute::filter(&array, &filter).context(error::ArrowComputeSnafu)?;
-        Helper::try_into_vector(result)
-    }
+    //     let result = compute::filter(&array, &filter).context(error::ArrowComputeSnafu)?;
+    //     Helper::try_into_vector(result)
+    // }
 }

@@ -22,7 +22,7 @@ use serde::{Deserialize, Serialize};
 use crate::error::{self, Error, Result};
 use crate::type_id::LogicalTypeId;
 use crate::types::{
-    BinaryType, BooleanType, DateTimeType, DateType, Float32Type, Float64Type, Int16Type,
+    BinaryType, BooleanType, DateTimeType, Float32Type, Float64Type, Int16Type,
     Int32Type, Int64Type, Int8Type, ListType, NullType, StringType, TimestampMicrosecondType,
     TimestampMillisecondType, TimestampNanosecondType, TimestampSecondType, TimestampType,
     UInt16Type, UInt32Type, UInt64Type, UInt8Type,
@@ -53,7 +53,7 @@ pub enum ConcreteDataType {
     String(StringType),
 
     // Date types:
-    Date(DateType),
+    // Date(DateType),
     DateTime(DateTimeType),
     Timestamp(TimestampType),
 
@@ -79,7 +79,7 @@ impl ConcreteDataType {
         matches!(
             self,
             ConcreteDataType::String(_)
-                | ConcreteDataType::Date(_)
+                // | ConcreteDataType::Date(_)
                 | ConcreteDataType::DateTime(_)
                 | ConcreteDataType::Timestamp(_)
         )
@@ -92,7 +92,7 @@ impl ConcreteDataType {
                 | ConcreteDataType::Int16(_)
                 | ConcreteDataType::Int32(_)
                 | ConcreteDataType::Int64(_)
-                | ConcreteDataType::Date(_)
+                // | ConcreteDataType::Date(_)
                 | ConcreteDataType::DateTime(_)
                 | ConcreteDataType::Timestamp(_)
         )
@@ -161,7 +161,7 @@ impl TryFrom<&ArrowDataType> for ConcreteDataType {
             ArrowDataType::Int64 => Self::int64_datatype(),
             ArrowDataType::Float32 => Self::float32_datatype(),
             ArrowDataType::Float64 => Self::float64_datatype(),
-            ArrowDataType::Date32 => Self::date_datatype(),
+            // ArrowDataType::Date32 => Self::date_datatype(),
             ArrowDataType::Date64 => Self::datetime_datatype(),
             ArrowDataType::Timestamp(u, _) => ConcreteDataType::from_arrow_time_unit(u),
             ArrowDataType::Binary | ArrowDataType::LargeBinary => Self::binary_datatype(),
@@ -197,7 +197,8 @@ macro_rules! impl_new_concrete_type_functions {
 
 impl_new_concrete_type_functions!(
     Null, Boolean, UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64, Float32, Float64,
-    Binary, Date, DateTime, String
+    Binary, DateTime, String
+    // Binary, Date, DateTime, String
 );
 
 impl ConcreteDataType {

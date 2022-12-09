@@ -59,7 +59,7 @@ pub enum Value {
     Binary(Bytes),
 
     // Date & Time types:
-    Date(Date),
+    // Date(Date),
     DateTime(DateTime),
     Timestamp(Timestamp),
 
@@ -90,7 +90,7 @@ impl Display for Value {
                     .join("");
                 write!(f, "{}", hex)
             }
-            Value::Date(v) => write!(f, "{}", v),
+            // Value::Date(v) => write!(f, "{}", v),
             Value::DateTime(v) => write!(f, "{}", v),
             Value::Timestamp(v) => write!(f, "{}", v.to_iso8601_string()),
             Value::List(v) => {
@@ -128,7 +128,7 @@ impl Value {
             Value::Float64(_) => ConcreteDataType::float64_datatype(),
             Value::String(_) => ConcreteDataType::string_datatype(),
             Value::Binary(_) => ConcreteDataType::binary_datatype(),
-            Value::Date(_) => ConcreteDataType::date_datatype(),
+            // Value::Date(_) => ConcreteDataType::date_datatype(),
             Value::DateTime(_) => ConcreteDataType::datetime_datatype(),
             Value::Timestamp(v) => ConcreteDataType::timestamp_datatype(v.unit()),
             Value::List(list) => ConcreteDataType::list_datatype(list.datatype().clone()),
@@ -169,7 +169,7 @@ impl Value {
             Value::Float64(v) => ValueRef::Float64(*v),
             Value::String(v) => ValueRef::String(v.as_utf8()),
             Value::Binary(v) => ValueRef::Binary(v),
-            Value::Date(v) => ValueRef::Date(*v),
+            // Value::Date(v) => ValueRef::Date(*v),
             Value::DateTime(v) => ValueRef::DateTime(*v),
             Value::List(v) => ValueRef::List(ListValueRef::Ref { val: v }),
             Value::Timestamp(v) => ValueRef::Timestamp(*v),
@@ -194,7 +194,7 @@ impl Value {
             Value::String(_) => LogicalTypeId::String,
             Value::Binary(_) => LogicalTypeId::Binary,
             Value::List(_) => LogicalTypeId::List,
-            Value::Date(_) => LogicalTypeId::Date,
+            // Value::Date(_) => LogicalTypeId::Date,
             Value::DateTime(_) => LogicalTypeId::DateTime,
             Value::Timestamp(t) => match t.unit() {
                 TimeUnit::Second => LogicalTypeId::TimestampSecond,
@@ -234,7 +234,7 @@ impl Value {
             Value::Float64(v) => ScalarValue::Float64(Some(v.0)),
             Value::String(v) => ScalarValue::Utf8(Some(v.as_utf8().to_string())),
             Value::Binary(v) => ScalarValue::LargeBinary(Some(v.to_vec())),
-            Value::Date(v) => ScalarValue::Date32(Some(v.val())),
+            // Value::Date(v) => ScalarValue::Date32(Some(v.val())),
             Value::DateTime(v) => ScalarValue::Date64(Some(v.val())),
             Value::Null => to_null_value(output_type),
             Value::List(list) => {
@@ -265,7 +265,7 @@ fn to_null_value(output_type: &ConcreteDataType) -> ScalarValue {
         ConcreteDataType::Float64(_) => ScalarValue::Float64(None),
         ConcreteDataType::Binary(_) => ScalarValue::LargeBinary(None),
         ConcreteDataType::String(_) => ScalarValue::Utf8(None),
-        ConcreteDataType::Date(_) => ScalarValue::Date32(None),
+        // ConcreteDataType::Date(_) => ScalarValue::Date32(None),
         ConcreteDataType::DateTime(_) => ScalarValue::Date64(None),
         ConcreteDataType::Timestamp(t) => timestamp_to_scalar_value(t.unit(), None),
         ConcreteDataType::List(_) => {
@@ -309,7 +309,7 @@ macro_rules! impl_ord_for_value_like {
                 ($Type::Float64(v1), $Type::Float64(v2)) => v1.cmp(v2),
                 ($Type::String(v1), $Type::String(v2)) => v1.cmp(v2),
                 ($Type::Binary(v1), $Type::Binary(v2)) => v1.cmp(v2),
-                ($Type::Date(v1), $Type::Date(v2)) => v1.cmp(v2),
+                // ($Type::Date(v1), $Type::Date(v2)) => v1.cmp(v2),
                 ($Type::DateTime(v1), $Type::DateTime(v2)) => v1.cmp(v2),
                 ($Type::Timestamp(v1), $Type::Timestamp(v2)) => v1.cmp(v2),
                 ($Type::List(v1), $Type::List(v2)) => v1.cmp(v2),
@@ -366,7 +366,7 @@ impl_value_from!(Float32, f32);
 impl_value_from!(Float64, f64);
 impl_value_from!(String, StringBytes);
 impl_value_from!(Binary, Bytes);
-impl_value_from!(Date, Date);
+// impl_value_from!(Date, Date);
 impl_value_from!(DateTime, DateTime);
 impl_value_from!(Timestamp, Timestamp);
 
@@ -413,7 +413,7 @@ impl TryFrom<Value> for serde_json::Value {
             Value::Float64(v) => serde_json::Value::from(v.0),
             Value::String(bytes) => serde_json::Value::String(bytes.as_utf8().to_string()),
             Value::Binary(bytes) => serde_json::to_value(bytes)?,
-            Value::Date(v) => serde_json::Value::Number(v.val().into()),
+            // Value::Date(v) => serde_json::Value::Number(v.val().into()),
             Value::DateTime(v) => serde_json::Value::Number(v.val().into()),
             Value::List(v) => serde_json::to_value(v)?,
             Value::Timestamp(v) => serde_json::to_value(v.value())?,
@@ -527,7 +527,7 @@ impl TryFrom<ScalarValue> for Value {
                 let datatype = ConcreteDataType::try_from(field.data_type())?;
                 Value::List(ListValue::new(items, datatype))
             }
-            ScalarValue::Date32(d) => d.map(|x| Value::Date(Date::new(x))).unwrap_or(Value::Null),
+            // ScalarValue::Date32(d) => d.map(|x| Value::Date(Date::new(x))).unwrap_or(Value::Null),
             ScalarValue::Date64(d) => d
                 .map(|x| Value::DateTime(DateTime::new(x)))
                 .unwrap_or(Value::Null),
@@ -544,6 +544,7 @@ impl TryFrom<ScalarValue> for Value {
                 .map(|x| Value::Timestamp(Timestamp::new(x, TimeUnit::Nanosecond)))
                 .unwrap_or(Value::Null),
             ScalarValue::Decimal128(_, _, _)
+            | ScalarValue::Date32(_)
             | ScalarValue::Time64(_)
             | ScalarValue::IntervalYearMonth(_)
             | ScalarValue::IntervalDayTime(_)
@@ -583,7 +584,7 @@ pub enum ValueRef<'a> {
     Binary(&'a [u8]),
 
     // Date & Time types:
-    Date(Date),
+    // Date(Date),
     DateTime(DateTime),
     Timestamp(Timestamp),
     List(ListValueRef<'a>),
@@ -627,10 +628,10 @@ impl<'a> ValueRef<'a> {
         impl_as_for_value_ref!(self, Boolean)
     }
 
-    /// Cast itself to [Date].
-    pub fn as_date(&self) -> Result<Option<Date>> {
-        impl_as_for_value_ref!(self, Date)
-    }
+    // /// Cast itself to [Date].
+    // pub fn as_date(&self) -> Result<Option<Date>> {
+    //     impl_as_for_value_ref!(self, Date)
+    // }
 
     /// Cast itself to [DateTime].
     pub fn as_datetime(&self) -> Result<Option<DateTime>> {
@@ -689,7 +690,7 @@ impl_value_ref_from!(Int32, i32);
 impl_value_ref_from!(Int64, i64);
 impl_value_ref_from!(Float32, f32);
 impl_value_ref_from!(Float64, f64);
-impl_value_ref_from!(Date, Date);
+// impl_value_ref_from!(Date, Date);
 impl_value_ref_from!(DateTime, DateTime);
 impl_value_ref_from!(Timestamp, Timestamp);
 
