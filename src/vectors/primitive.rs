@@ -57,19 +57,19 @@ impl<T: LogicalPrimitiveType> PrimitiveVector<T> {
         Self { array }
     }
 
-    pub fn try_from_arrow_array(array: impl AsRef<dyn Array>) -> Result<Self> {
-        let data = array
-            .as_ref()
-            .as_any()
-            .downcast_ref::<PrimitiveArray<T::ArrowPrimitive>>()
-            .with_context(|| error::ConversionSnafu {
-                from: format!("{:?}", array.as_ref().data_type()),
-            })?
-            .data()
-            .clone();
-        let concrete_array = PrimitiveArray::<T::ArrowPrimitive>::from(data);
-        Ok(Self::new(concrete_array))
-    }
+    // pub fn try_from_arrow_array(array: impl AsRef<dyn Array>) -> Result<Self> {
+    //     let data = array
+    //         .as_ref()
+    //         .as_any()
+    //         .downcast_ref::<PrimitiveArray<T::ArrowPrimitive>>()
+    //         .with_context(|| error::ConversionSnafu {
+    //             from: format!("{:?}", array.as_ref().data_type()),
+    //         })?
+    //         .data()
+    //         .clone();
+    //     let concrete_array = PrimitiveArray::<T::ArrowPrimitive>::from(data);
+    //     Ok(Self::new(concrete_array))
+    // }
 
     pub fn from_slice<P: AsRef<[T::Native]>>(slice: P) -> Self {
         let iter = slice.as_ref().iter().copied();

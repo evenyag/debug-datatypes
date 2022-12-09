@@ -183,31 +183,31 @@ pub type VectorRef = Arc<dyn Vector>;
 //     fn extend_slice_of(&mut self, vector: &dyn Vector, offset: usize, length: usize) -> Result<()>;
 // }
 
-/// Helper to define `try_from_arrow_array(array: arrow::array::ArrayRef)` function.
-macro_rules! impl_try_from_arrow_array_for_vector {
-    ($Array: ident, $Vector: ident) => {
-        impl $Vector {
-            pub fn try_from_arrow_array(
-                array: impl AsRef<dyn arrow::array::Array>,
-            ) -> crate::error::Result<$Vector> {
-                use snafu::OptionExt;
+// /// Helper to define `try_from_arrow_array(array: arrow::array::ArrayRef)` function.
+// macro_rules! impl_try_from_arrow_array_for_vector {
+//     ($Array: ident, $Vector: ident) => {
+//         impl $Vector {
+//             pub fn try_from_arrow_array(
+//                 array: impl AsRef<dyn arrow::array::Array>,
+//             ) -> crate::error::Result<$Vector> {
+//                 use snafu::OptionExt;
 
-                let data = array
-                    .as_ref()
-                    .as_any()
-                    .downcast_ref::<$Array>()
-                    .with_context(|| crate::error::ConversionSnafu {
-                        from: std::format!("{:?}", array.as_ref().data_type()),
-                    })?
-                    .data()
-                    .clone();
+//                 let data = array
+//                     .as_ref()
+//                     .as_any()
+//                     .downcast_ref::<$Array>()
+//                     .with_context(|| crate::error::ConversionSnafu {
+//                         from: std::format!("{:?}", array.as_ref().data_type()),
+//                     })?
+//                     .data()
+//                     .clone();
 
-                let concrete_array = $Array::from(data);
-                Ok($Vector::from(concrete_array))
-            }
-        }
-    };
-}
+//                 let concrete_array = $Array::from(data);
+//                 Ok($Vector::from(concrete_array))
+//             }
+//         }
+//     };
+// }
 
 // macro_rules! impl_validity_for_vector {
 //     ($array: expr) => {
@@ -215,52 +215,52 @@ macro_rules! impl_try_from_arrow_array_for_vector {
 //     };
 // }
 
-macro_rules! impl_get_for_vector {
-    ($array: expr, $index: ident) => {
-        if $array.is_valid($index) {
-            // Safety: The index have been checked by `is_valid()`.
-            unsafe { $array.value_unchecked($index).into() }
-        } else {
-            Value::Null
-        }
-    };
-}
+// macro_rules! impl_get_for_vector {
+//     ($array: expr, $index: ident) => {
+//         if $array.is_valid($index) {
+//             // Safety: The index have been checked by `is_valid()`.
+//             unsafe { $array.value_unchecked($index).into() }
+//         } else {
+//             Value::Null
+//         }
+//     };
+// }
 
-macro_rules! impl_get_ref_for_vector {
-    ($array: expr, $index: ident) => {
-        if $array.is_valid($index) {
-            // Safety: The index have been checked by `is_valid()`.
-            unsafe { $array.value_unchecked($index).into() }
-        } else {
-            ValueRef::Null
-        }
-    };
-}
+// macro_rules! impl_get_ref_for_vector {
+//     ($array: expr, $index: ident) => {
+//         if $array.is_valid($index) {
+//             // Safety: The index have been checked by `is_valid()`.
+//             unsafe { $array.value_unchecked($index).into() }
+//         } else {
+//             ValueRef::Null
+//         }
+//     };
+// }
 
-macro_rules! impl_extend_for_builder {
-    ($mutable_vector: expr, $vector: ident, $VectorType: ident, $offset: ident, $length: ident) => {{
-        use snafu::OptionExt;
+// macro_rules! impl_extend_for_builder {
+//     ($mutable_vector: expr, $vector: ident, $VectorType: ident, $offset: ident, $length: ident) => {{
+//         use snafu::OptionExt;
 
-        let sliced_vector = $vector.slice($offset, $length);
-        let concrete_vector = sliced_vector
-            .as_any()
-            .downcast_ref::<$VectorType>()
-            .with_context(|| crate::error::CastTypeSnafu {
-                msg: format!(
-                    "Failed to cast vector from {} to {}",
-                    $vector.vector_type_name(),
-                    stringify!($VectorType)
-                ),
-            })?;
-        for value in concrete_vector.iter_data() {
-            $mutable_vector.push(value);
-        }
-        Ok(())
-    }};
-}
+//         let sliced_vector = $vector.slice($offset, $length);
+//         let concrete_vector = sliced_vector
+//             .as_any()
+//             .downcast_ref::<$VectorType>()
+//             .with_context(|| crate::error::CastTypeSnafu {
+//                 msg: format!(
+//                     "Failed to cast vector from {} to {}",
+//                     $vector.vector_type_name(),
+//                     stringify!($VectorType)
+//                 ),
+//             })?;
+//         for value in concrete_vector.iter_data() {
+//             $mutable_vector.push(value);
+//         }
+//         Ok(())
+//     }};
+// }
 
-pub(crate) use {
-    impl_extend_for_builder, impl_get_for_vector, impl_get_ref_for_vector,
-    impl_try_from_arrow_array_for_vector,
-    // impl_try_from_arrow_array_for_vector, impl_validity_for_vector,
-};
+// pub(crate) use {
+//     // impl_extend_for_builder, impl_get_for_vector, impl_get_ref_for_vector,
+//     impl_try_from_arrow_array_for_vector,
+//     // impl_try_from_arrow_array_for_vector, impl_validity_for_vector,
+// };

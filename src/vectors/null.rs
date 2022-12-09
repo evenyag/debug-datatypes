@@ -134,7 +134,7 @@ impl fmt::Debug for NullVector {
 //     }
 // }
 
-vectors::impl_try_from_arrow_array_for_vector!(NullArray, NullVector);
+// vectors::impl_try_from_arrow_array_for_vector!(NullArray, NullVector);
 
 #[derive(Default)]
 pub struct NullVectorBuilder {

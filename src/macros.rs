@@ -160,8 +160,10 @@ mod tests {
         );
 
         let result = {
-            let left: &<L as Scalar>::VectorType = unsafe { Helper::static_cast(l) };
-            let right: &<R as Scalar>::VectorType = unsafe { Helper::static_cast(r) };
+            let left: &<L as Scalar>::VectorType = Helper::static_cast(l);
+            let right: &<R as Scalar>::VectorType = Helper::static_cast(r);
+            // let left: &<L as Scalar>::VectorType = unsafe { Helper::static_cast(l) };
+            // let right: &<R as Scalar>::VectorType = unsafe { Helper::static_cast(r) };
             let b = right.get_data(0);
 
             let it = left.iter_data().map(|a| f(a, b, ctx));

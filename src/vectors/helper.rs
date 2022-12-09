@@ -48,10 +48,11 @@ impl Helper {
     /// Can be useful for fast comparisons.
     /// # Safety
     /// Assumes that the `vector` is  T.
-    pub unsafe fn static_cast<T: Any>(vector: &VectorRef) -> &T {
+    pub fn static_cast<T: Any>(vector: &VectorRef) -> &T {
         let object = vector.as_ref();
         debug_assert!(object.as_any().is::<T>());
-        &*(object as *const dyn Vector as *const T)
+        object.as_any().downcast_ref::<T>().unwrap()
+        // &*(object as *const dyn Vector as *const T)
     }
 
     // pub fn check_get_scalar<T: Scalar>(vector: &VectorRef) -> Result<&<T as Scalar>::VectorType> {
@@ -115,46 +116,46 @@ impl Helper {
     //     arr
     // }
 
-    /// Try to cast an arrow array into vector
-    ///
-    /// # Panics
-    /// Panic if given arrow data type is not supported.
-    pub fn try_into_vector(array: impl AsRef<dyn Array>) -> Result<VectorRef> {
-        Ok(match array.as_ref().data_type() {
-            ArrowDataType::Null => Arc::new(NullVector::try_from_arrow_array(array)?),
-            // ArrowDataType::Boolean => Arc::new(BooleanVector::try_from_arrow_array(array)?),
-            // ArrowDataType::LargeBinary => Arc::new(BinaryVector::try_from_arrow_array(array)?),
-            ArrowDataType::Int8 => Arc::new(Int8Vector::try_from_arrow_array(array)?),
-            ArrowDataType::Int16 => Arc::new(Int16Vector::try_from_arrow_array(array)?),
-            ArrowDataType::Int32 => Arc::new(Int32Vector::try_from_arrow_array(array)?),
-            ArrowDataType::Int64 => Arc::new(Int64Vector::try_from_arrow_array(array)?),
-            ArrowDataType::UInt8 => Arc::new(UInt8Vector::try_from_arrow_array(array)?),
-            ArrowDataType::UInt16 => Arc::new(UInt16Vector::try_from_arrow_array(array)?),
-            ArrowDataType::UInt32 => Arc::new(UInt32Vector::try_from_arrow_array(array)?),
-            ArrowDataType::UInt64 => Arc::new(UInt64Vector::try_from_arrow_array(array)?),
-            ArrowDataType::Float32 => Arc::new(Float32Vector::try_from_arrow_array(array)?),
-            ArrowDataType::Float64 => Arc::new(Float64Vector::try_from_arrow_array(array)?),
-            // ArrowDataType::Utf8 => Arc::new(StringVector::try_from_arrow_array(array)?),
-            // ArrowDataType::Date32 => Arc::new(DateVector::try_from_arrow_array(array)?),
-            // ArrowDataType::Date64 => Arc::new(DateTimeVector::try_from_arrow_array(array)?),
-            // ArrowDataType::List(_) => Arc::new(ListVector::try_from_arrow_array(array)?),
-            // ArrowDataType::Timestamp(unit, _) => match unit {
-            //     TimeUnit::Second => Arc::new(TimestampSecondVector::try_from_arrow_array(array)?),
-            //     TimeUnit::Millisecond => {
-            //         Arc::new(TimestampMillisecondVector::try_from_arrow_array(array)?)
-            //     }
-            //     TimeUnit::Microsecond => {
-            //         Arc::new(TimestampMicrosecondVector::try_from_arrow_array(array)?)
-            //     }
-            //     TimeUnit::Nanosecond => {
-            //         Arc::new(TimestampNanosecondVector::try_from_arrow_array(array)?)
-            //     }
-            // },
-            _ => {
-                unimplemented!("Arrow array datatype: {:?}", array.as_ref().data_type())
-            }
-        })
-    }
+    // /// Try to cast an arrow array into vector
+    // ///
+    // /// # Panics
+    // /// Panic if given arrow data type is not supported.
+    // pub fn try_into_vector(array: impl AsRef<dyn Array>) -> Result<VectorRef> {
+    //     Ok(match array.as_ref().data_type() {
+    //         ArrowDataType::Null => Arc::new(NullVector::try_from_arrow_array(array)?),
+    //         // ArrowDataType::Boolean => Arc::new(BooleanVector::try_from_arrow_array(array)?),
+    //         // ArrowDataType::LargeBinary => Arc::new(BinaryVector::try_from_arrow_array(array)?),
+    //         ArrowDataType::Int8 => Arc::new(Int8Vector::try_from_arrow_array(array)?),
+    //         ArrowDataType::Int16 => Arc::new(Int16Vector::try_from_arrow_array(array)?),
+    //         ArrowDataType::Int32 => Arc::new(Int32Vector::try_from_arrow_array(array)?),
+    //         ArrowDataType::Int64 => Arc::new(Int64Vector::try_from_arrow_array(array)?),
+    //         ArrowDataType::UInt8 => Arc::new(UInt8Vector::try_from_arrow_array(array)?),
+    //         ArrowDataType::UInt16 => Arc::new(UInt16Vector::try_from_arrow_array(array)?),
+    //         ArrowDataType::UInt32 => Arc::new(UInt32Vector::try_from_arrow_array(array)?),
+    //         ArrowDataType::UInt64 => Arc::new(UInt64Vector::try_from_arrow_array(array)?),
+    //         ArrowDataType::Float32 => Arc::new(Float32Vector::try_from_arrow_array(array)?),
+    //         ArrowDataType::Float64 => Arc::new(Float64Vector::try_from_arrow_array(array)?),
+    //         // ArrowDataType::Utf8 => Arc::new(StringVector::try_from_arrow_array(array)?),
+    //         // ArrowDataType::Date32 => Arc::new(DateVector::try_from_arrow_array(array)?),
+    //         // ArrowDataType::Date64 => Arc::new(DateTimeVector::try_from_arrow_array(array)?),
+    //         // ArrowDataType::List(_) => Arc::new(ListVector::try_from_arrow_array(array)?),
+    //         // ArrowDataType::Timestamp(unit, _) => match unit {
+    //         //     TimeUnit::Second => Arc::new(TimestampSecondVector::try_from_arrow_array(array)?),
+    //         //     TimeUnit::Millisecond => {
+    //         //         Arc::new(TimestampMillisecondVector::try_from_arrow_array(array)?)
+    //         //     }
+    //         //     TimeUnit::Microsecond => {
+    //         //         Arc::new(TimestampMicrosecondVector::try_from_arrow_array(array)?)
+    //         //     }
+    //         //     TimeUnit::Nanosecond => {
+    //         //         Arc::new(TimestampNanosecondVector::try_from_arrow_array(array)?)
+    //         //     }
+    //         // },
+    //         _ => {
+    //             unimplemented!("Arrow array datatype: {:?}", array.as_ref().data_type())
+    //         }
+    //     })
+    // }
 
     // /// Try to cast slice of `arrays` to vectors.
     // pub fn try_into_vectors(arrays: &[ArrayRef]) -> Result<Vec<VectorRef>> {
