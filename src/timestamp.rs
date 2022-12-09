@@ -57,7 +57,8 @@ macro_rules! define_timestamp_with_unit {
                 }
             }
 
-            impl From<[<Timestamp $unit>]> for ValueRef<'static> {
+            impl From<[<Timestamp $unit>]> for ValueRef {
+            // impl From<[<Timestamp $unit>]> for ValueRef<'static> {
                 fn from(t: [<Timestamp $unit>]) -> Self {
                     ValueRef::Timestamp(t.0)
                 }

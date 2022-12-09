@@ -61,7 +61,8 @@ pub trait WrapperType:
     + for<'a> Scalar<RefType<'a> = Self>
     + PartialEq
     + Into<Value>
-    + Into<ValueRef<'static>>
+    + Into<ValueRef>
+    // + Into<ValueRef<'static>>
     + Serialize
     + Into<serde_json::Value>
 {

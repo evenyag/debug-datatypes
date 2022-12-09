@@ -29,11 +29,12 @@ use crate::error::{self, Result};
 use crate::scalars::{Scalar, ScalarVectorBuilder};
 // use crate::value::{ListValue, ListValueRef};
 use crate::vectors::{
-    BinaryVector, BooleanVector, DateTimeVector, Float32Vector, Float64Vector,
+    DateTimeVector, Float32Vector, Float64Vector,
     // BinaryVector, BooleanVector, DateTimeVector, DateVector, Float32Vector, Float64Vector,
     Int16Vector, Int32Vector, Int64Vector, Int8Vector,
     // Int16Vector, Int32Vector, Int64Vector, Int8Vector, ListVector, ListVectorBuilder,
-    MutableVector, NullVector, StringVector, TimestampMicrosecondVector,
+    MutableVector, NullVector, TimestampMicrosecondVector,
+    // MutableVector, NullVector, StringVector, TimestampMicrosecondVector,
     TimestampMillisecondVector, TimestampNanosecondVector, TimestampSecondVector, UInt16Vector,
     UInt32Vector, UInt64Vector, UInt8Vector, Vector, VectorRef,
 };
@@ -120,8 +121,8 @@ impl Helper {
     pub fn try_into_vector(array: impl AsRef<dyn Array>) -> Result<VectorRef> {
         Ok(match array.as_ref().data_type() {
             ArrowDataType::Null => Arc::new(NullVector::try_from_arrow_array(array)?),
-            ArrowDataType::Boolean => Arc::new(BooleanVector::try_from_arrow_array(array)?),
-            ArrowDataType::LargeBinary => Arc::new(BinaryVector::try_from_arrow_array(array)?),
+            // ArrowDataType::Boolean => Arc::new(BooleanVector::try_from_arrow_array(array)?),
+            // ArrowDataType::LargeBinary => Arc::new(BinaryVector::try_from_arrow_array(array)?),
             ArrowDataType::Int8 => Arc::new(Int8Vector::try_from_arrow_array(array)?),
             ArrowDataType::Int16 => Arc::new(Int16Vector::try_from_arrow_array(array)?),
             ArrowDataType::Int32 => Arc::new(Int32Vector::try_from_arrow_array(array)?),
@@ -132,7 +133,7 @@ impl Helper {
             ArrowDataType::UInt64 => Arc::new(UInt64Vector::try_from_arrow_array(array)?),
             ArrowDataType::Float32 => Arc::new(Float32Vector::try_from_arrow_array(array)?),
             ArrowDataType::Float64 => Arc::new(Float64Vector::try_from_arrow_array(array)?),
-            ArrowDataType::Utf8 => Arc::new(StringVector::try_from_arrow_array(array)?),
+            // ArrowDataType::Utf8 => Arc::new(StringVector::try_from_arrow_array(array)?),
             // ArrowDataType::Date32 => Arc::new(DateVector::try_from_arrow_array(array)?),
             ArrowDataType::Date64 => Arc::new(DateTimeVector::try_from_arrow_array(array)?),
             // ArrowDataType::List(_) => Arc::new(ListVector::try_from_arrow_array(array)?),
@@ -149,6 +150,9 @@ impl Helper {
                 }
             },
             ArrowDataType::Float16
+            | ArrowDataType::Boolean
+            | ArrowDataType::LargeBinary
+            | ArrowDataType::Utf8
             | ArrowDataType::Date32
             | ArrowDataType::Time32(_)
             | ArrowDataType::Time64(_)

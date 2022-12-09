@@ -23,9 +23,10 @@ use crate::types::{
 use crate::value::{Value};
 // use crate::value::{ListValue, ListValueRef, Value};
 use crate::vectors::{
-    BinaryVector, BooleanVector, DateTimeVector, MutableVector,
+    DateTimeVector, MutableVector,
     // BinaryVector, BooleanVector, DateTimeVector, DateVector, ListVector, MutableVector,
-    PrimitiveVector, StringVector, Vector,
+    PrimitiveVector, Vector,
+    // PrimitiveVector, StringVector, Vector,
 };
 
 fn get_iter_capacity<T, I: Iterator<Item = T>>(iter: &I) -> usize {
@@ -185,78 +186,78 @@ impl_scalar_for_native!(i64, Int64Type);
 impl_scalar_for_native!(f32, Float32Type);
 impl_scalar_for_native!(f64, Float64Type);
 
-impl Scalar for bool {
-    type VectorType = BooleanVector;
-    type RefType<'a> = bool;
+// impl Scalar for bool {
+//     type VectorType = BooleanVector;
+//     type RefType<'a> = bool;
 
-    #[inline]
-    fn as_scalar_ref(&self) -> bool {
-        *self
-    }
+//     #[inline]
+//     fn as_scalar_ref(&self) -> bool {
+//         *self
+//     }
 
-    #[allow(clippy::needless_lifetimes)]
-    #[inline]
-    fn upcast_gat<'short, 'long: 'short>(long: bool) -> bool {
-        long
-    }
-}
+//     #[allow(clippy::needless_lifetimes)]
+//     #[inline]
+//     fn upcast_gat<'short, 'long: 'short>(long: bool) -> bool {
+//         long
+//     }
+// }
 
-impl<'a> ScalarRef<'a> for bool {
-    type ScalarType = bool;
+// impl<'a> ScalarRef<'a> for bool {
+//     type ScalarType = bool;
 
-    #[inline]
-    fn to_owned_scalar(&self) -> bool {
-        *self
-    }
-}
+//     #[inline]
+//     fn to_owned_scalar(&self) -> bool {
+//         *self
+//     }
+// }
 
-impl Scalar for String {
-    type VectorType = StringVector;
-    type RefType<'a> = &'a str;
+// impl Scalar for String {
+//     type VectorType = StringVector;
+//     type RefType<'a> = &'a str;
 
-    #[inline]
-    fn as_scalar_ref(&self) -> &str {
-        self
-    }
+//     #[inline]
+//     fn as_scalar_ref(&self) -> &str {
+//         self
+//     }
 
-    #[inline]
-    fn upcast_gat<'short, 'long: 'short>(long: &'long str) -> &'short str {
-        long
-    }
-}
+//     #[inline]
+//     fn upcast_gat<'short, 'long: 'short>(long: &'long str) -> &'short str {
+//         long
+//     }
+// }
 
-impl<'a> ScalarRef<'a> for &'a str {
-    type ScalarType = String;
+// impl<'a> ScalarRef<'a> for &'a str {
+//     type ScalarType = String;
 
-    #[inline]
-    fn to_owned_scalar(&self) -> String {
-        self.to_string()
-    }
-}
+//     #[inline]
+//     fn to_owned_scalar(&self) -> String {
+//         self.to_string()
+//     }
+// }
 
-impl Scalar for Vec<u8> {
-    type VectorType = BinaryVector;
-    type RefType<'a> = &'a [u8];
+// impl Scalar for Vec<u8> {
+//     type VectorType = BinaryVector;
+//     type RefType<'a> = &'a [u8];
 
-    #[inline]
-    fn as_scalar_ref(&self) -> &[u8] {
-        self
-    }
+//     #[inline]
+//     fn as_scalar_ref(&self) -> &[u8] {
+//         self
+//     }
 
-    #[inline]
-    fn upcast_gat<'short, 'long: 'short>(long: &'long [u8]) -> &'short [u8] {
-        long
-    }
-}
+//     #[inline]
+//     fn upcast_gat<'short, 'long: 'short>(long: &'long [u8]) -> &'short [u8] {
+//         long
+//     }
+// }
 
-impl<'a> ScalarRef<'a> for &'a [u8] {
-    type ScalarType = Vec<u8>;
+// impl<'a> ScalarRef<'a> for &'a [u8] {
+//     type ScalarType = Vec<u8>;
 
-    #[inline]
-    fn to_owned_scalar(&self) -> Vec<u8> {
-        self.to_vec()
-    }
-}
+//     #[inline]
+//     fn to_owned_scalar(&self) -> Vec<u8> {
+//         self.to_vec()
+//     }
+// }
 
 // impl Scalar for Date {
 //     type VectorType = DateVector;

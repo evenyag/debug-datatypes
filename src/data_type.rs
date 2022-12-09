@@ -22,8 +22,10 @@ use serde::{Deserialize, Serialize};
 use crate::error::{self, Error, Result};
 use crate::type_id::LogicalTypeId;
 use crate::types::{
-    BinaryType, BooleanType, DateTimeType, Float32Type, Float64Type, Int16Type,
-    Int32Type, Int64Type, Int8Type, NullType, StringType, TimestampMicrosecondType,
+    DateTimeType, Float32Type, Float64Type, Int16Type,
+    // BinaryType, BooleanType, DateTimeType, Float32Type, Float64Type, Int16Type,
+    Int32Type, Int64Type, Int8Type, NullType, TimestampMicrosecondType,
+    // Int32Type, Int64Type, Int8Type, NullType, StringType, TimestampMicrosecondType,
     TimestampMillisecondType, TimestampNanosecondType, TimestampSecondType, TimestampType,
     UInt16Type, UInt32Type, UInt64Type, UInt8Type,
 };
@@ -34,7 +36,7 @@ use crate::vectors::MutableVector;
 #[enum_dispatch::enum_dispatch(DataType)]
 pub enum ConcreteDataType {
     Null(NullType),
-    Boolean(BooleanType),
+    // Boolean(BooleanType),
 
     // Numeric types:
     Int8(Int8Type),
@@ -49,8 +51,8 @@ pub enum ConcreteDataType {
     Float64(Float64Type),
 
     // String types:
-    Binary(BinaryType),
-    String(StringType),
+    // Binary(BinaryType),
+    // String(StringType),
 
     // Date types:
     // Date(DateType),
@@ -150,7 +152,7 @@ impl TryFrom<&ArrowDataType> for ConcreteDataType {
     fn try_from(dt: &ArrowDataType) -> Result<ConcreteDataType> {
         let concrete_type = match dt {
             ArrowDataType::Null => Self::null_datatype(),
-            ArrowDataType::Boolean => Self::boolean_datatype(),
+            // ArrowDataType::Boolean => Self::boolean_datatype(),
             ArrowDataType::UInt8 => Self::uint8_datatype(),
             ArrowDataType::UInt16 => Self::uint16_datatype(),
             ArrowDataType::UInt32 => Self::uint32_datatype(),
@@ -164,8 +166,8 @@ impl TryFrom<&ArrowDataType> for ConcreteDataType {
             // ArrowDataType::Date32 => Self::date_datatype(),
             ArrowDataType::Date64 => Self::datetime_datatype(),
             ArrowDataType::Timestamp(u, _) => ConcreteDataType::from_arrow_time_unit(u),
-            ArrowDataType::Binary | ArrowDataType::LargeBinary => Self::binary_datatype(),
-            ArrowDataType::Utf8 | ArrowDataType::LargeUtf8 => Self::string_datatype(),
+            // ArrowDataType::Binary | ArrowDataType::LargeBinary => Self::binary_datatype(),
+            // ArrowDataType::Utf8 | ArrowDataType::LargeUtf8 => Self::string_datatype(),
             // ArrowDataType::List(field) => Self::List(ListType::new(
             //     ConcreteDataType::from_arrow_type(field.data_type()),
             // )),
@@ -196,8 +198,9 @@ macro_rules! impl_new_concrete_type_functions {
 }
 
 impl_new_concrete_type_functions!(
-    Null, Boolean, UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64, Float32, Float64,
-    Binary, DateTime, String
+    Null, UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64, Float32, Float64,
+    // Null, Boolean, UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64, Float32, Float64,
+    DateTime
     // Binary, Date, DateTime, String
 );
 

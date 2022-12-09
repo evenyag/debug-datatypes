@@ -42,7 +42,7 @@ pub enum Value {
     Null,
 
     // Numeric types:
-    Boolean(bool),
+    // Boolean(bool),
     UInt8(u8),
     UInt16(u16),
     UInt32(u32),
@@ -55,8 +55,8 @@ pub enum Value {
     Float64(OrderedF64),
 
     // String types:
-    String(StringBytes),
-    Binary(Bytes),
+    // String(StringBytes),
+    // Binary(Bytes),
 
     // Date & Time types:
     // Date(Date),
@@ -70,7 +70,7 @@ impl Display for Value {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Value::Null => write!(f, "{}", self.data_type().name()),
-            Value::Boolean(v) => write!(f, "{}", v),
+            // Value::Boolean(v) => write!(f, "{}", v),
             Value::UInt8(v) => write!(f, "{}", v),
             Value::UInt16(v) => write!(f, "{}", v),
             Value::UInt32(v) => write!(f, "{}", v),
@@ -81,15 +81,15 @@ impl Display for Value {
             Value::Int64(v) => write!(f, "{}", v),
             Value::Float32(v) => write!(f, "{}", v),
             Value::Float64(v) => write!(f, "{}", v),
-            Value::String(v) => write!(f, "{}", v.as_utf8()),
-            Value::Binary(v) => {
-                let hex = v
-                    .iter()
-                    .map(|b| format!("{:02x}", b))
-                    .collect::<Vec<String>>()
-                    .join("");
-                write!(f, "{}", hex)
-            }
+            // Value::String(v) => write!(f, "{}", v.as_utf8()),
+            // Value::Binary(v) => {
+            //     let hex = v
+            //         .iter()
+            //         .map(|b| format!("{:02x}", b))
+            //         .collect::<Vec<String>>()
+            //         .join("");
+            //     write!(f, "{}", hex)
+            // }
             // Value::Date(v) => write!(f, "{}", v),
             Value::DateTime(v) => write!(f, "{}", v),
             Value::Timestamp(v) => write!(f, "{}", v.to_iso8601_string()),
@@ -115,7 +115,7 @@ impl Value {
     pub fn data_type(&self) -> ConcreteDataType {
         match self {
             Value::Null => ConcreteDataType::null_datatype(),
-            Value::Boolean(_) => ConcreteDataType::boolean_datatype(),
+            // Value::Boolean(_) => ConcreteDataType::boolean_datatype(),
             Value::UInt8(_) => ConcreteDataType::uint8_datatype(),
             Value::UInt16(_) => ConcreteDataType::uint16_datatype(),
             Value::UInt32(_) => ConcreteDataType::uint32_datatype(),
@@ -126,8 +126,8 @@ impl Value {
             Value::Int64(_) => ConcreteDataType::int64_datatype(),
             Value::Float32(_) => ConcreteDataType::float32_datatype(),
             Value::Float64(_) => ConcreteDataType::float64_datatype(),
-            Value::String(_) => ConcreteDataType::string_datatype(),
-            Value::Binary(_) => ConcreteDataType::binary_datatype(),
+            // Value::String(_) => ConcreteDataType::string_datatype(),
+            // Value::Binary(_) => ConcreteDataType::binary_datatype(),
             // Value::Date(_) => ConcreteDataType::date_datatype(),
             Value::DateTime(_) => ConcreteDataType::datetime_datatype(),
             Value::Timestamp(v) => ConcreteDataType::timestamp_datatype(v.unit()),
@@ -156,7 +156,7 @@ impl Value {
     pub fn as_value_ref(&self) -> ValueRef {
         match self {
             Value::Null => ValueRef::Null,
-            Value::Boolean(v) => ValueRef::Boolean(*v),
+            // Value::Boolean(v) => ValueRef::Boolean(*v),
             Value::UInt8(v) => ValueRef::UInt8(*v),
             Value::UInt16(v) => ValueRef::UInt16(*v),
             Value::UInt32(v) => ValueRef::UInt32(*v),
@@ -167,8 +167,8 @@ impl Value {
             Value::Int64(v) => ValueRef::Int64(*v),
             Value::Float32(v) => ValueRef::Float32(*v),
             Value::Float64(v) => ValueRef::Float64(*v),
-            Value::String(v) => ValueRef::String(v.as_utf8()),
-            Value::Binary(v) => ValueRef::Binary(v),
+            // Value::String(v) => ValueRef::String(v.as_utf8()),
+            // Value::Binary(v) => ValueRef::Binary(v),
             // Value::Date(v) => ValueRef::Date(*v),
             Value::DateTime(v) => ValueRef::DateTime(*v),
             // Value::List(v) => ValueRef::List(ListValueRef::Ref { val: v }),
@@ -180,7 +180,7 @@ impl Value {
     pub fn logical_type_id(&self) -> LogicalTypeId {
         match self {
             Value::Null => LogicalTypeId::Null,
-            Value::Boolean(_) => LogicalTypeId::Boolean,
+            // Value::Boolean(_) => LogicalTypeId::Boolean,
             Value::UInt8(_) => LogicalTypeId::UInt8,
             Value::UInt16(_) => LogicalTypeId::UInt16,
             Value::UInt32(_) => LogicalTypeId::UInt32,
@@ -191,8 +191,8 @@ impl Value {
             Value::Int64(_) => LogicalTypeId::Int64,
             Value::Float32(_) => LogicalTypeId::Float32,
             Value::Float64(_) => LogicalTypeId::Float64,
-            Value::String(_) => LogicalTypeId::String,
-            Value::Binary(_) => LogicalTypeId::Binary,
+            // Value::String(_) => LogicalTypeId::String,
+            // Value::Binary(_) => LogicalTypeId::Binary,
             // Value::List(_) => LogicalTypeId::List,
             // Value::Date(_) => LogicalTypeId::Date,
             Value::DateTime(_) => LogicalTypeId::DateTime,
@@ -221,7 +221,7 @@ impl Value {
         );
 
         let scalar_value = match self {
-            Value::Boolean(v) => ScalarValue::Boolean(Some(*v)),
+            // Value::Boolean(v) => ScalarValue::Boolean(Some(*v)),
             Value::UInt8(v) => ScalarValue::UInt8(Some(*v)),
             Value::UInt16(v) => ScalarValue::UInt16(Some(*v)),
             Value::UInt32(v) => ScalarValue::UInt32(Some(*v)),
@@ -232,8 +232,8 @@ impl Value {
             Value::Int64(v) => ScalarValue::Int64(Some(*v)),
             Value::Float32(v) => ScalarValue::Float32(Some(v.0)),
             Value::Float64(v) => ScalarValue::Float64(Some(v.0)),
-            Value::String(v) => ScalarValue::Utf8(Some(v.as_utf8().to_string())),
-            Value::Binary(v) => ScalarValue::LargeBinary(Some(v.to_vec())),
+            // Value::String(v) => ScalarValue::Utf8(Some(v.as_utf8().to_string())),
+            // Value::Binary(v) => ScalarValue::LargeBinary(Some(v.to_vec())),
             // Value::Date(v) => ScalarValue::Date32(Some(v.val())),
             Value::DateTime(v) => ScalarValue::Date64(Some(v.val())),
             Value::Null => to_null_value(output_type),
@@ -252,7 +252,7 @@ impl Value {
 fn to_null_value(output_type: &ConcreteDataType) -> ScalarValue {
     match output_type {
         ConcreteDataType::Null(_) => ScalarValue::Null,
-        ConcreteDataType::Boolean(_) => ScalarValue::Boolean(None),
+        // ConcreteDataType::Boolean(_) => ScalarValue::Boolean(None),
         ConcreteDataType::Int8(_) => ScalarValue::Int8(None),
         ConcreteDataType::Int16(_) => ScalarValue::Int16(None),
         ConcreteDataType::Int32(_) => ScalarValue::Int32(None),
@@ -263,8 +263,8 @@ fn to_null_value(output_type: &ConcreteDataType) -> ScalarValue {
         ConcreteDataType::UInt64(_) => ScalarValue::UInt64(None),
         ConcreteDataType::Float32(_) => ScalarValue::Float32(None),
         ConcreteDataType::Float64(_) => ScalarValue::Float64(None),
-        ConcreteDataType::Binary(_) => ScalarValue::LargeBinary(None),
-        ConcreteDataType::String(_) => ScalarValue::Utf8(None),
+        // ConcreteDataType::Binary(_) => ScalarValue::LargeBinary(None),
+        // ConcreteDataType::String(_) => ScalarValue::Utf8(None),
         // ConcreteDataType::Date(_) => ScalarValue::Date32(None),
         ConcreteDataType::DateTime(_) => ScalarValue::Date64(None),
         ConcreteDataType::Timestamp(t) => timestamp_to_scalar_value(t.unit(), None),
@@ -296,7 +296,7 @@ macro_rules! impl_ord_for_value_like {
         } else {
             match ($left, $right) {
                 ($Type::Null, $Type::Null) => Ordering::Equal,
-                ($Type::Boolean(v1), $Type::Boolean(v2)) => v1.cmp(v2),
+                // ($Type::Boolean(v1), $Type::Boolean(v2)) => v1.cmp(v2),
                 ($Type::UInt8(v1), $Type::UInt8(v2)) => v1.cmp(v2),
                 ($Type::UInt16(v1), $Type::UInt16(v2)) => v1.cmp(v2),
                 ($Type::UInt32(v1), $Type::UInt32(v2)) => v1.cmp(v2),
@@ -307,8 +307,8 @@ macro_rules! impl_ord_for_value_like {
                 ($Type::Int64(v1), $Type::Int64(v2)) => v1.cmp(v2),
                 ($Type::Float32(v1), $Type::Float32(v2)) => v1.cmp(v2),
                 ($Type::Float64(v1), $Type::Float64(v2)) => v1.cmp(v2),
-                ($Type::String(v1), $Type::String(v2)) => v1.cmp(v2),
-                ($Type::Binary(v1), $Type::Binary(v2)) => v1.cmp(v2),
+                // ($Type::String(v1), $Type::String(v2)) => v1.cmp(v2),
+                // ($Type::Binary(v1), $Type::Binary(v2)) => v1.cmp(v2),
                 // ($Type::Date(v1), $Type::Date(v2)) => v1.cmp(v2),
                 ($Type::DateTime(v1), $Type::DateTime(v2)) => v1.cmp(v2),
                 ($Type::Timestamp(v1), $Type::Timestamp(v2)) => v1.cmp(v2),
@@ -353,7 +353,7 @@ macro_rules! impl_value_from {
     };
 }
 
-impl_value_from!(Boolean, bool);
+// impl_value_from!(Boolean, bool);
 impl_value_from!(UInt8, u8);
 impl_value_from!(UInt16, u16);
 impl_value_from!(UInt32, u32);
@@ -364,35 +364,35 @@ impl_value_from!(Int32, i32);
 impl_value_from!(Int64, i64);
 impl_value_from!(Float32, f32);
 impl_value_from!(Float64, f64);
-impl_value_from!(String, StringBytes);
-impl_value_from!(Binary, Bytes);
+// impl_value_from!(String, StringBytes);
+// impl_value_from!(Binary, Bytes);
 // impl_value_from!(Date, Date);
 impl_value_from!(DateTime, DateTime);
 impl_value_from!(Timestamp, Timestamp);
 
-impl From<String> for Value {
-    fn from(string: String) -> Value {
-        Value::String(string.into())
-    }
-}
+// impl From<String> for Value {
+//     fn from(string: String) -> Value {
+//         Value::String(string.into())
+//     }
+// }
 
-impl From<&str> for Value {
-    fn from(string: &str) -> Value {
-        Value::String(string.into())
-    }
-}
+// impl From<&str> for Value {
+//     fn from(string: &str) -> Value {
+//         Value::String(string.into())
+//     }
+// }
 
-impl From<Vec<u8>> for Value {
-    fn from(bytes: Vec<u8>) -> Value {
-        Value::Binary(bytes.into())
-    }
-}
+// impl From<Vec<u8>> for Value {
+//     fn from(bytes: Vec<u8>) -> Value {
+//         Value::Binary(bytes.into())
+//     }
+// }
 
-impl From<&[u8]> for Value {
-    fn from(bytes: &[u8]) -> Value {
-        Value::Binary(bytes.into())
-    }
-}
+// impl From<&[u8]> for Value {
+//     fn from(bytes: &[u8]) -> Value {
+//         Value::Binary(bytes.into())
+//     }
+// }
 
 impl TryFrom<Value> for serde_json::Value {
     type Error = serde_json::Error;
@@ -400,7 +400,7 @@ impl TryFrom<Value> for serde_json::Value {
     fn try_from(value: Value) -> serde_json::Result<serde_json::Value> {
         let json_value = match value {
             Value::Null => serde_json::Value::Null,
-            Value::Boolean(v) => serde_json::Value::Bool(v),
+            // Value::Boolean(v) => serde_json::Value::Bool(v),
             Value::UInt8(v) => serde_json::Value::from(v),
             Value::UInt16(v) => serde_json::Value::from(v),
             Value::UInt32(v) => serde_json::Value::from(v),
@@ -411,8 +411,8 @@ impl TryFrom<Value> for serde_json::Value {
             Value::Int64(v) => serde_json::Value::from(v),
             Value::Float32(v) => serde_json::Value::from(v.0),
             Value::Float64(v) => serde_json::Value::from(v.0),
-            Value::String(bytes) => serde_json::Value::String(bytes.as_utf8().to_string()),
-            Value::Binary(bytes) => serde_json::to_value(bytes)?,
+            // Value::String(bytes) => serde_json::Value::String(bytes.as_utf8().to_string()),
+            // Value::Binary(bytes) => serde_json::to_value(bytes)?,
             // Value::Date(v) => serde_json::Value::Number(v.val().into()),
             Value::DateTime(v) => serde_json::Value::Number(v.val().into()),
             // Value::List(v) => serde_json::to_value(v)?,
@@ -497,7 +497,7 @@ impl TryFrom<ScalarValue> for Value {
     fn try_from(v: ScalarValue) -> Result<Self> {
         let v = match v {
             ScalarValue::Null => Value::Null,
-            ScalarValue::Boolean(b) => Value::from(b),
+            // ScalarValue::Boolean(b) => Value::from(b),
             ScalarValue::Float32(f) => Value::from(f),
             ScalarValue::Float64(f) => Value::from(f),
             ScalarValue::Int8(i) => Value::from(i),
@@ -508,12 +508,12 @@ impl TryFrom<ScalarValue> for Value {
             ScalarValue::UInt16(u) => Value::from(u),
             ScalarValue::UInt32(u) => Value::from(u),
             ScalarValue::UInt64(u) => Value::from(u),
-            ScalarValue::Utf8(s) | ScalarValue::LargeUtf8(s) => {
-                Value::from(s.map(StringBytes::from))
-            }
-            ScalarValue::Binary(b)
-            | ScalarValue::LargeBinary(b)
-            | ScalarValue::FixedSizeBinary(_, b) => Value::from(b.map(Bytes::from)),
+            // ScalarValue::Utf8(s) | ScalarValue::LargeUtf8(s) => {
+            //     Value::from(s.map(StringBytes::from))
+            // }
+            // ScalarValue::Binary(b)
+            // | ScalarValue::LargeBinary(b)
+            // | ScalarValue::FixedSizeBinary(_, b) => Value::from(b.map(Bytes::from)),
             // ScalarValue::List(vs, field) => {
             //     let items = if let Some(vs) = vs {
             //         let vs = vs
@@ -543,15 +543,7 @@ impl TryFrom<ScalarValue> for Value {
             ScalarValue::TimestampNanosecond(t, _) => t
                 .map(|x| Value::Timestamp(Timestamp::new(x, TimeUnit::Nanosecond)))
                 .unwrap_or(Value::Null),
-            ScalarValue::Decimal128(_, _, _)
-            | ScalarValue::Date32(_)
-            | ScalarValue::List(_, _)
-            | ScalarValue::Time64(_)
-            | ScalarValue::IntervalYearMonth(_)
-            | ScalarValue::IntervalDayTime(_)
-            | ScalarValue::IntervalMonthDayNano(_)
-            | ScalarValue::Struct(_, _)
-            | ScalarValue::Dictionary(_, _) => {
+            _ => {
                 return error::UnsupportedArrowTypeSnafu {
                     arrow_type: v.get_datatype(),
                 }
@@ -564,11 +556,12 @@ impl TryFrom<ScalarValue> for Value {
 
 /// Reference to [Value].
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ValueRef<'a> {
+pub enum ValueRef {
+// pub enum ValueRef<'a> {
     Null,
 
     // Numeric types:
-    Boolean(bool),
+    // Boolean(bool),
     UInt8(u8),
     UInt16(u16),
     UInt32(u32),
@@ -581,8 +574,8 @@ pub enum ValueRef<'a> {
     Float64(OrderedF64),
 
     // String types:
-    String(&'a str),
-    Binary(&'a [u8]),
+    // String(&'a str),
+    // Binary(&'a [u8]),
 
     // Date & Time types:
     // Date(Date),
@@ -608,26 +601,27 @@ macro_rules! impl_as_for_value_ref {
     };
 }
 
-impl<'a> ValueRef<'a> {
+impl ValueRef {
+// impl<'a> ValueRef<'a> {
     /// Returns true if this is null.
     pub fn is_null(&self) -> bool {
         matches!(self, ValueRef::Null)
     }
 
-    /// Cast itself to binary slice.
-    pub fn as_binary(&self) -> Result<Option<&[u8]>> {
-        impl_as_for_value_ref!(self, Binary)
-    }
+    // /// Cast itself to binary slice.
+    // pub fn as_binary(&self) -> Result<Option<&[u8]>> {
+    //     impl_as_for_value_ref!(self, Binary)
+    // }
 
-    /// Cast itself to string slice.
-    pub fn as_string(&self) -> Result<Option<&str>> {
-        impl_as_for_value_ref!(self, String)
-    }
+    // /// Cast itself to string slice.
+    // pub fn as_string(&self) -> Result<Option<&str>> {
+    //     impl_as_for_value_ref!(self, String)
+    // }
 
-    /// Cast itself to boolean.
-    pub fn as_boolean(&self) -> Result<Option<bool>> {
-        impl_as_for_value_ref!(self, Boolean)
-    }
+    // /// Cast itself to boolean.
+    // pub fn as_boolean(&self) -> Result<Option<bool>> {
+    //     impl_as_for_value_ref!(self, Boolean)
+    // }
 
     // /// Cast itself to [Date].
     // pub fn as_date(&self) -> Result<Option<Date>> {
@@ -649,13 +643,15 @@ impl<'a> ValueRef<'a> {
     // }
 }
 
-impl<'a> PartialOrd for ValueRef<'a> {
+impl PartialOrd for ValueRef {
+// impl<'a> PartialOrd for ValueRef<'a> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl<'a> Ord for ValueRef<'a> {
+impl Ord for ValueRef {
+// impl<'a> Ord for ValueRef<'a> {
     fn cmp(&self, other: &Self) -> Ordering {
         impl_ord_for_value_like!(ValueRef, self, other)
     }
@@ -663,13 +659,15 @@ impl<'a> Ord for ValueRef<'a> {
 
 macro_rules! impl_value_ref_from {
     ($Variant:ident, $Type:ident) => {
-        impl From<$Type> for ValueRef<'_> {
+        impl From<$Type> for ValueRef {
+        // impl From<$Type> for ValueRef<'_> {
             fn from(value: $Type) -> Self {
                 ValueRef::$Variant(value.into())
             }
         }
 
-        impl From<Option<$Type>> for ValueRef<'_> {
+        impl From<Option<$Type>> for ValueRef {
+        // impl From<Option<$Type>> for ValueRef<'_> {
             fn from(value: Option<$Type>) -> Self {
                 match value {
                     Some(v) => ValueRef::$Variant(v.into()),
@@ -680,7 +678,7 @@ macro_rules! impl_value_ref_from {
     };
 }
 
-impl_value_ref_from!(Boolean, bool);
+// impl_value_ref_from!(Boolean, bool);
 impl_value_ref_from!(UInt8, u8);
 impl_value_ref_from!(UInt16, u16);
 impl_value_ref_from!(UInt32, u32);
@@ -695,17 +693,17 @@ impl_value_ref_from!(Float64, f64);
 impl_value_ref_from!(DateTime, DateTime);
 impl_value_ref_from!(Timestamp, Timestamp);
 
-impl<'a> From<&'a str> for ValueRef<'a> {
-    fn from(string: &'a str) -> ValueRef<'a> {
-        ValueRef::String(string)
-    }
-}
+// impl<'a> From<&'a str> for ValueRef<'a> {
+//     fn from(string: &'a str) -> ValueRef<'a> {
+//         ValueRef::String(string)
+//     }
+// }
 
-impl<'a> From<&'a [u8]> for ValueRef<'a> {
-    fn from(bytes: &'a [u8]) -> ValueRef<'a> {
-        ValueRef::Binary(bytes)
-    }
-}
+// impl<'a> From<&'a [u8]> for ValueRef<'a> {
+//     fn from(bytes: &'a [u8]) -> ValueRef<'a> {
+//         ValueRef::Binary(bytes)
+//     }
+// }
 
 // impl<'a> From<Option<ListValueRef<'a>>> for ValueRef<'a> {
 //     fn from(list: Option<ListValueRef>) -> ValueRef {

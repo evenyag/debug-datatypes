@@ -18,8 +18,9 @@ use crate::data_type::DataType;
 use crate::types::TimestampType;
 use crate::vectors::{
     // BinaryVector, BooleanVector, DateTimeVector, DateVector, ListVector, PrimitiveVector,
-    BinaryVector, BooleanVector, DateTimeVector, PrimitiveVector,
-    StringVector, TimestampMicrosecondVector, TimestampMillisecondVector,
+    DateTimeVector, PrimitiveVector,
+    TimestampMicrosecondVector, TimestampMillisecondVector,
+    // StringVector, TimestampMicrosecondVector, TimestampMillisecondVector,
     TimestampNanosecondVector, TimestampSecondVector, Vector,
 };
 use crate::with_match_primitive_type_id;
@@ -57,9 +58,9 @@ fn equal(lhs: &dyn Vector, rhs: &dyn Vector) -> bool {
     let lhs_type = lhs.data_type();
     match lhs.data_type() {
         Null(_) => true,
-        Boolean(_) => is_vector_eq!(BooleanVector, lhs, rhs),
-        Binary(_) => is_vector_eq!(BinaryVector, lhs, rhs),
-        String(_) => is_vector_eq!(StringVector, lhs, rhs),
+        // Boolean(_) => is_vector_eq!(BooleanVector, lhs, rhs),
+        // Binary(_) => is_vector_eq!(BinaryVector, lhs, rhs),
+        // String(_) => is_vector_eq!(StringVector, lhs, rhs),
         // Date(_) => is_vector_eq!(DateVector, lhs, rhs),
         DateTime(_) => is_vector_eq!(DateTimeVector, lhs, rhs),
         Timestamp(t) => match t {
@@ -92,86 +93,86 @@ fn equal(lhs: &dyn Vector, rhs: &dyn Vector) -> bool {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::vectors::{
-        Float32Vector, Float64Vector, Int16Vector, Int32Vector, Int64Vector, Int8Vector,
-        NullVector, UInt16Vector, UInt32Vector, UInt64Vector, UInt8Vector, VectorRef,
-    };
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//     use crate::vectors::{
+//         Float32Vector, Float64Vector, Int16Vector, Int32Vector, Int64Vector, Int8Vector,
+//         NullVector, UInt16Vector, UInt32Vector, UInt64Vector, UInt8Vector, VectorRef,
+//     };
 
-    fn assert_vector_ref_eq(vector: VectorRef) {
-        let rhs = vector.clone();
-        assert_eq!(vector, rhs);
-        assert_dyn_vector_eq(&*vector, &*rhs);
-    }
+//     fn assert_vector_ref_eq(vector: VectorRef) {
+//         let rhs = vector.clone();
+//         assert_eq!(vector, rhs);
+//         assert_dyn_vector_eq(&*vector, &*rhs);
+//     }
 
-    fn assert_dyn_vector_eq(lhs: &dyn Vector, rhs: &dyn Vector) {
-        assert_eq!(lhs, rhs);
-    }
+//     fn assert_dyn_vector_eq(lhs: &dyn Vector, rhs: &dyn Vector) {
+//         assert_eq!(lhs, rhs);
+//     }
 
-    fn assert_vector_ref_ne(lhs: VectorRef, rhs: VectorRef) {
-        assert_ne!(lhs, rhs);
-    }
+//     fn assert_vector_ref_ne(lhs: VectorRef, rhs: VectorRef) {
+//         assert_ne!(lhs, rhs);
+//     }
 
-    #[test]
-    fn test_vector_eq() {
-        assert_vector_ref_eq(Arc::new(BinaryVector::from(vec![
-            Some(b"hello".to_vec()),
-            Some(b"world".to_vec()),
-        ])));
-        assert_vector_ref_eq(Arc::new(BooleanVector::from(vec![true, false])));
-        assert_vector_ref_eq(Arc::new(BooleanVector::from(vec![true, false])));
-        // assert_vector_ref_eq(Arc::new(DateVector::from(vec![Some(100), Some(120)])));
-        assert_vector_ref_eq(Arc::new(DateTimeVector::from(vec![Some(100), Some(120)])));
-        assert_vector_ref_eq(Arc::new(TimestampSecondVector::from_values([100, 120])));
-        assert_vector_ref_eq(Arc::new(TimestampMillisecondVector::from_values([
-            100, 120,
-        ])));
-        assert_vector_ref_eq(Arc::new(TimestampMicrosecondVector::from_values([
-            100, 120,
-        ])));
-        assert_vector_ref_eq(Arc::new(TimestampNanosecondVector::from_values([100, 120])));
+//     #[test]
+//     fn test_vector_eq() {
+//         // assert_vector_ref_eq(Arc::new(BinaryVector::from(vec![
+//         //     Some(b"hello".to_vec()),
+//         //     Some(b"world".to_vec()),
+//         // ])));
+//         // assert_vector_ref_eq(Arc::new(BooleanVector::from(vec![true, false])));
+//         // assert_vector_ref_eq(Arc::new(BooleanVector::from(vec![true, false])));
+//         // assert_vector_ref_eq(Arc::new(DateVector::from(vec![Some(100), Some(120)])));
+//         assert_vector_ref_eq(Arc::new(DateTimeVector::from(vec![Some(100), Some(120)])));
+//         assert_vector_ref_eq(Arc::new(TimestampSecondVector::from_values([100, 120])));
+//         assert_vector_ref_eq(Arc::new(TimestampMillisecondVector::from_values([
+//             100, 120,
+//         ])));
+//         assert_vector_ref_eq(Arc::new(TimestampMicrosecondVector::from_values([
+//             100, 120,
+//         ])));
+//         assert_vector_ref_eq(Arc::new(TimestampNanosecondVector::from_values([100, 120])));
 
-        // let list_vector = list::tests::new_list_vector(&[
-        //     Some(vec![Some(1), Some(2)]),
-        //     None,
-        //     Some(vec![Some(3), Some(4)]),
-        // ]);
-        // assert_vector_ref_eq(Arc::new(list_vector));
+//         // let list_vector = list::tests::new_list_vector(&[
+//         //     Some(vec![Some(1), Some(2)]),
+//         //     None,
+//         //     Some(vec![Some(3), Some(4)]),
+//         // ]);
+//         // assert_vector_ref_eq(Arc::new(list_vector));
 
-        assert_vector_ref_eq(Arc::new(NullVector::new(4)));
-        assert_vector_ref_eq(Arc::new(StringVector::from(vec![
-            Some("hello"),
-            Some("world"),
-        ])));
+//         assert_vector_ref_eq(Arc::new(NullVector::new(4)));
+//         // assert_vector_ref_eq(Arc::new(StringVector::from(vec![
+//         //     Some("hello"),
+//         //     Some("world"),
+//         // ])));
 
-        assert_vector_ref_eq(Arc::new(Int8Vector::from_slice(&[1, 2, 3, 4])));
-        assert_vector_ref_eq(Arc::new(UInt8Vector::from_slice(&[1, 2, 3, 4])));
-        assert_vector_ref_eq(Arc::new(Int16Vector::from_slice(&[1, 2, 3, 4])));
-        assert_vector_ref_eq(Arc::new(UInt16Vector::from_slice(&[1, 2, 3, 4])));
-        assert_vector_ref_eq(Arc::new(Int32Vector::from_slice(&[1, 2, 3, 4])));
-        assert_vector_ref_eq(Arc::new(UInt32Vector::from_slice(&[1, 2, 3, 4])));
-        assert_vector_ref_eq(Arc::new(Int64Vector::from_slice(&[1, 2, 3, 4])));
-        assert_vector_ref_eq(Arc::new(UInt64Vector::from_slice(&[1, 2, 3, 4])));
-        assert_vector_ref_eq(Arc::new(Float32Vector::from_slice(&[1.0, 2.0, 3.0, 4.0])));
-        assert_vector_ref_eq(Arc::new(Float64Vector::from_slice(&[1.0, 2.0, 3.0, 4.0])));
-    }
+//         assert_vector_ref_eq(Arc::new(Int8Vector::from_slice(&[1, 2, 3, 4])));
+//         assert_vector_ref_eq(Arc::new(UInt8Vector::from_slice(&[1, 2, 3, 4])));
+//         assert_vector_ref_eq(Arc::new(Int16Vector::from_slice(&[1, 2, 3, 4])));
+//         assert_vector_ref_eq(Arc::new(UInt16Vector::from_slice(&[1, 2, 3, 4])));
+//         assert_vector_ref_eq(Arc::new(Int32Vector::from_slice(&[1, 2, 3, 4])));
+//         assert_vector_ref_eq(Arc::new(UInt32Vector::from_slice(&[1, 2, 3, 4])));
+//         assert_vector_ref_eq(Arc::new(Int64Vector::from_slice(&[1, 2, 3, 4])));
+//         assert_vector_ref_eq(Arc::new(UInt64Vector::from_slice(&[1, 2, 3, 4])));
+//         assert_vector_ref_eq(Arc::new(Float32Vector::from_slice(&[1.0, 2.0, 3.0, 4.0])));
+//         assert_vector_ref_eq(Arc::new(Float64Vector::from_slice(&[1.0, 2.0, 3.0, 4.0])));
+//     }
 
-    #[test]
-    fn test_vector_ne() {
-        assert_vector_ref_ne(
-            Arc::new(Int32Vector::from_slice(&[1, 2, 3, 4])),
-            Arc::new(Int32Vector::from_slice(&[1, 2])),
-        );
-        assert_vector_ref_ne(
-            Arc::new(Int32Vector::from_slice(&[1, 2, 3, 4])),
-            Arc::new(Int8Vector::from_slice(&[1, 2, 3, 4])),
-        );
-        assert_vector_ref_ne(
-            Arc::new(Int32Vector::from_slice(&[1, 2, 3, 4])),
-            Arc::new(BooleanVector::from(vec![true, true])),
-        );
-        assert_vector_ref_ne(Arc::new(NullVector::new(5)), Arc::new(NullVector::new(8)));
-    }
-}
+//     #[test]
+//     fn test_vector_ne() {
+//         assert_vector_ref_ne(
+//             Arc::new(Int32Vector::from_slice(&[1, 2, 3, 4])),
+//             Arc::new(Int32Vector::from_slice(&[1, 2])),
+//         );
+//         assert_vector_ref_ne(
+//             Arc::new(Int32Vector::from_slice(&[1, 2, 3, 4])),
+//             Arc::new(Int8Vector::from_slice(&[1, 2, 3, 4])),
+//         );
+//         assert_vector_ref_ne(
+//             Arc::new(Int32Vector::from_slice(&[1, 2, 3, 4])),
+//             Arc::new(BooleanVector::from(vec![true, true])),
+//         );
+//         assert_vector_ref_ne(Arc::new(NullVector::new(5)), Arc::new(NullVector::new(8)));
+//     }
+// }

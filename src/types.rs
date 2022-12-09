@@ -12,19 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod binary_type;
-mod boolean_type;
+// mod binary_type;
+// mod boolean_type;
 // mod date_type;
 mod datetime_type;
 // mod list_type;
 mod null_type;
 mod primitive_type;
-mod string_type;
+// mod string_type;
 
 mod timestamp_type;
 
-pub use binary_type::BinaryType;
-pub use boolean_type::BooleanType;
+// pub use binary_type::BinaryType;
+// pub use boolean_type::BooleanType;
 // pub use date_type::DateType;
 pub use datetime_type::DateTimeType;
 // pub use list_type::ListType;
@@ -33,7 +33,7 @@ pub use primitive_type::{
     Float32Type, Float64Type, Int16Type, Int32Type, Int64Type, Int8Type, LogicalPrimitiveType,
     NativeType, OrdPrimitive, UInt16Type, UInt32Type, UInt64Type, UInt8Type, WrapperType,
 };
-pub use string_type::StringType;
+// pub use string_type::StringType;
 pub use timestamp_type::{
     TimestampMicrosecondType, TimestampMillisecondType, TimestampNanosecondType,
     TimestampSecondType, TimestampType,

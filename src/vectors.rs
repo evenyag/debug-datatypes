@@ -24,8 +24,8 @@ use crate::error::{self, Result};
 use crate::serialize::Serializable;
 use crate::value::{Value, ValueRef};
 
-mod binary;
-mod boolean;
+// mod binary;
+// mod boolean;
 // mod date;
 mod datetime;
 mod eq;
@@ -33,12 +33,12 @@ mod helper;
 // mod list;
 mod null;
 mod primitive;
-mod string;
+// mod string;
 mod timestamp;
 mod validity;
 
-pub use binary::{BinaryVector, BinaryVectorBuilder};
-pub use boolean::{BooleanVector, BooleanVectorBuilder};
+// pub use binary::{BinaryVector, BinaryVectorBuilder};
+// pub use boolean::{BooleanVector, BooleanVectorBuilder};
 // pub use date::{DateVector, DateVectorBuilder};
 pub use datetime::{DateTimeVector, DateTimeVectorBuilder};
 pub use helper::Helper;
@@ -51,7 +51,7 @@ pub use primitive::{
     UInt16Vector, UInt16VectorBuilder, UInt32Vector, UInt32VectorBuilder, UInt64Vector,
     UInt64VectorBuilder, UInt8Vector, UInt8VectorBuilder,
 };
-pub use string::{StringVector, StringVectorBuilder};
+// pub use string::{StringVector, StringVectorBuilder};
 pub use timestamp::{
     TimestampMicrosecondVector, TimestampMicrosecondVectorBuilder, TimestampMillisecondVector,
     TimestampMillisecondVectorBuilder, TimestampNanosecondVector, TimestampNanosecondVectorBuilder,
