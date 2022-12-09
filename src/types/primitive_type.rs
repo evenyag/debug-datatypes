@@ -26,7 +26,7 @@ use crate::error::{self, Result};
 use crate::scalars::{Scalar, ScalarRef, ScalarVectorBuilder};
 use crate::type_id::LogicalTypeId;
 // use crate::types::{DateTimeType, DateType};
-use crate::value::{Value, ValueRef};
+// use crate::value::{Value, ValueRef};
 use crate::vectors::{PrimitiveVector, PrimitiveVectorBuilder, Vector};
 // use crate::vectors::{MutableVector, PrimitiveVector, PrimitiveVectorBuilder, Vector};
 
@@ -60,8 +60,8 @@ pub trait WrapperType:
     + fmt::Debug
     + for<'a> Scalar<RefType<'a> = Self>
     + PartialEq
-    + Into<Value>
-    + Into<ValueRef>
+    // + Into<Value>
+    // + Into<ValueRef>
     // + Into<ValueRef<'static>>
     + Serialize
     + Into<serde_json::Value>
@@ -100,41 +100,41 @@ pub trait LogicalPrimitiveType: 'static + Sized {
     /// Dynamic cast the vector to the concrete vector type.
     fn cast_vector(vector: &dyn Vector) -> Result<&PrimitiveVector<Self>>;
 
-    /// Cast value ref to the primitive type.
-    fn cast_value_ref(value: ValueRef) -> Result<Option<Self::Wrapper>>;
+    // /// Cast value ref to the primitive type.
+    // fn cast_value_ref(value: ValueRef) -> Result<Option<Self::Wrapper>>;
 }
 
-/// A new type for [WrapperType], complement the `Ord` feature for it. Wrapping non ordered
-/// primitive types like `f32` and `f64` in `OrdPrimitive` can make them be used in places that
-/// require `Ord`. For example, in `Median` or `Percentile` UDAFs.
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub struct OrdPrimitive<T: WrapperType>(pub T);
+// /// A new type for [WrapperType], complement the `Ord` feature for it. Wrapping non ordered
+// /// primitive types like `f32` and `f64` in `OrdPrimitive` can make them be used in places that
+// /// require `Ord`. For example, in `Median` or `Percentile` UDAFs.
+// #[derive(Debug, Clone, Copy, PartialEq)]
+// pub struct OrdPrimitive<T: WrapperType>(pub T);
 
-impl<T: WrapperType> OrdPrimitive<T> {
-    pub fn as_primitive(&self) -> T::Native {
-        self.0.into_native()
-    }
-}
+// impl<T: WrapperType> OrdPrimitive<T> {
+//     pub fn as_primitive(&self) -> T::Native {
+//         self.0.into_native()
+//     }
+// }
 
-impl<T: WrapperType> Eq for OrdPrimitive<T> {}
+// impl<T: WrapperType> Eq for OrdPrimitive<T> {}
 
-impl<T: WrapperType> PartialOrd for OrdPrimitive<T> {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
+// impl<T: WrapperType> PartialOrd for OrdPrimitive<T> {
+//     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+//         Some(self.cmp(other))
+//     }
+// }
 
-impl<T: WrapperType> Ord for OrdPrimitive<T> {
-    fn cmp(&self, other: &Self) -> Ordering {
-        Into::<Value>::into(self.0).cmp(&Into::<Value>::into(other.0))
-    }
-}
+// impl<T: WrapperType> Ord for OrdPrimitive<T> {
+//     fn cmp(&self, other: &Self) -> Ordering {
+//         Into::<Value>::into(self.0).cmp(&Into::<Value>::into(other.0))
+//     }
+// }
 
-impl<T: WrapperType> From<OrdPrimitive<T>> for Value {
-    fn from(p: OrdPrimitive<T>) -> Self {
-        p.0.into()
-    }
-}
+// impl<T: WrapperType> From<OrdPrimitive<T>> for Value {
+//     fn from(p: OrdPrimitive<T>) -> Self {
+//         p.0.into()
+//     }
+// }
 
 macro_rules! impl_wrapper {
     ($Type: ident, $LogicalType: ident) => {
@@ -228,20 +228,20 @@ macro_rules! define_logical_primitive_type {
                     })
             }
 
-            fn cast_value_ref(value: ValueRef) -> Result<Option<$Native>> {
-                match value {
-                    ValueRef::Null => Ok(None),
-                    ValueRef::$TypeId(v) => Ok(Some(v.into())),
-                    other => error::CastTypeSnafu {
-                        msg: format!(
-                            "Failed to cast value {:?} to primitive type {}",
-                            other,
-                            stringify!($TypeId),
-                        ),
-                    }
-                    .fail(),
-                }
-            }
+            // fn cast_value_ref(value: ValueRef) -> Result<Option<$Native>> {
+            //     match value {
+            //         ValueRef::Null => Ok(None),
+            //         ValueRef::$TypeId(v) => Ok(Some(v.into())),
+            //         other => error::CastTypeSnafu {
+            //             msg: format!(
+            //                 "Failed to cast value {:?} to primitive type {}",
+            //                 other,
+            //                 stringify!($TypeId),
+            //             ),
+            //         }
+            //         .fail(),
+            //     }
+            // }
         }
     };
 }
@@ -259,9 +259,9 @@ macro_rules! define_non_timestamp_primitive {
                 LogicalTypeId::$TypeId
             }
 
-            fn default_value(&self) -> Value {
-                $Native::default().into()
-            }
+            // fn default_value(&self) -> Value {
+            //     $Native::default().into()
+            // }
 
             fn as_arrow_type(&self) -> ArrowDataType {
                 ArrowDataType::$TypeId
@@ -300,9 +300,9 @@ impl DataType for Int64Type {
         LogicalTypeId::Int64
     }
 
-    fn default_value(&self) -> Value {
-        Value::Int64(0)
-    }
+    // fn default_value(&self) -> Value {
+    //     Value::Int64(0)
+    // }
 
     fn as_arrow_type(&self) -> ArrowDataType {
         ArrowDataType::Int64

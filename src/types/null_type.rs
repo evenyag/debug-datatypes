@@ -19,7 +19,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::data_type::{DataType, DataTypeRef};
 use crate::type_id::LogicalTypeId;
-use crate::value::Value;
+// use crate::value::Value;
 use crate::vectors::{NullVectorBuilder};
 // use crate::vectors::{MutableVector, NullVectorBuilder};
 
@@ -41,9 +41,9 @@ impl DataType for NullType {
         LogicalTypeId::Null
     }
 
-    fn default_value(&self) -> Value {
-        Value::Null
-    }
+    // fn default_value(&self) -> Value {
+    //     Value::Null
+    // }
 
     fn as_arrow_type(&self) -> ArrowDataType {
         ArrowDataType::Null

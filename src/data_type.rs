@@ -29,7 +29,7 @@ use crate::types::{
     // TimestampMillisecondType, TimestampNanosecondType, TimestampSecondType, TimestampType,
     UInt16Type, UInt32Type, UInt64Type, UInt8Type,
 };
-use crate::value::Value;
+// use crate::value::Value;
 // use crate::vectors::MutableVector;
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -257,8 +257,8 @@ pub trait DataType: std::fmt::Debug + Send + Sync {
     /// Returns id of the Logical data type.
     fn logical_type_id(&self) -> LogicalTypeId;
 
-    /// Returns the default value of this type.
-    fn default_value(&self) -> Value;
+    // /// Returns the default value of this type.
+    // fn default_value(&self) -> Value;
 
     /// Convert this type as [arrow::datatypes::DataType].
     fn as_arrow_type(&self) -> ArrowDataType;

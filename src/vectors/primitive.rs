@@ -30,7 +30,7 @@ use crate::types::{
     Float32Type, Float64Type, Int16Type, Int32Type, Int64Type, Int8Type, LogicalPrimitiveType,
     UInt16Type, UInt32Type, UInt64Type, UInt8Type, WrapperType,
 };
-use crate::value::{Value, ValueRef};
+// use crate::value::{Value, ValueRef};
 use crate::vectors::{self, Vector, VectorRef};
 // use crate::vectors::{self, MutableVector, Validity, Vector, VectorRef};
 

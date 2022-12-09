@@ -25,7 +25,7 @@ mod scalars;
 // mod timestamp;
 pub mod type_id;
 pub mod types;
-pub mod value;
+// pub mod value;
 pub mod vectors;
 
 pub use arrow;
