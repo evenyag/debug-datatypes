@@ -28,8 +28,8 @@ use snafu::ensure;
 use crate::error::{self, Result};
 use crate::prelude::*;
 use crate::type_id::LogicalTypeId;
-use crate::types::ListType;
-use crate::vectors::ListVector;
+// use crate::types::ListType;
+// use crate::vectors::ListVector;
 
 pub type OrderedF32 = OrderedFloat<f32>;
 pub type OrderedF64 = OrderedFloat<f64>;
@@ -63,7 +63,7 @@ pub enum Value {
     DateTime(DateTime),
     Timestamp(Timestamp),
 
-    List(ListValue),
+    // List(ListValue),
 }
 
 impl Display for Value {
@@ -93,16 +93,16 @@ impl Display for Value {
             // Value::Date(v) => write!(f, "{}", v),
             Value::DateTime(v) => write!(f, "{}", v),
             Value::Timestamp(v) => write!(f, "{}", v.to_iso8601_string()),
-            Value::List(v) => {
-                let default = Box::new(vec![]);
-                let items = v.items().as_ref().unwrap_or(&default);
-                let items = items
-                    .iter()
-                    .map(|i| i.to_string())
-                    .collect::<Vec<String>>()
-                    .join(", ");
-                write!(f, "{}[{}]", v.datatype.name(), items)
-            }
+            // Value::List(v) => {
+            //     let default = Box::new(vec![]);
+            //     let items = v.items().as_ref().unwrap_or(&default);
+            //     let items = items
+            //         .iter()
+            //         .map(|i| i.to_string())
+            //         .collect::<Vec<String>>()
+            //         .join(", ");
+            //     write!(f, "{}[{}]", v.datatype.name(), items)
+            // }
         }
     }
 }
@@ -131,7 +131,7 @@ impl Value {
             // Value::Date(_) => ConcreteDataType::date_datatype(),
             Value::DateTime(_) => ConcreteDataType::datetime_datatype(),
             Value::Timestamp(v) => ConcreteDataType::timestamp_datatype(v.unit()),
-            Value::List(list) => ConcreteDataType::list_datatype(list.datatype().clone()),
+            // Value::List(list) => ConcreteDataType::list_datatype(list.datatype().clone()),
         }
     }
 
@@ -140,17 +140,17 @@ impl Value {
         matches!(self, Value::Null)
     }
 
-    /// Cast itself to [ListValue].
-    pub fn as_list(&self) -> Result<Option<&ListValue>> {
-        match self {
-            Value::Null => Ok(None),
-            Value::List(v) => Ok(Some(v)),
-            other => error::CastTypeSnafu {
-                msg: format!("Failed to cast {:?} to list value", other),
-            }
-            .fail(),
-        }
-    }
+    // /// Cast itself to [ListValue].
+    // pub fn as_list(&self) -> Result<Option<&ListValue>> {
+    //     match self {
+    //         Value::Null => Ok(None),
+    //         Value::List(v) => Ok(Some(v)),
+    //         other => error::CastTypeSnafu {
+    //             msg: format!("Failed to cast {:?} to list value", other),
+    //         }
+    //         .fail(),
+    //     }
+    // }
 
     /// Cast itself to [ValueRef].
     pub fn as_value_ref(&self) -> ValueRef {
@@ -171,7 +171,7 @@ impl Value {
             Value::Binary(v) => ValueRef::Binary(v),
             // Value::Date(v) => ValueRef::Date(*v),
             Value::DateTime(v) => ValueRef::DateTime(*v),
-            Value::List(v) => ValueRef::List(ListValueRef::Ref { val: v }),
+            // Value::List(v) => ValueRef::List(ListValueRef::Ref { val: v }),
             Value::Timestamp(v) => ValueRef::Timestamp(*v),
         }
     }
@@ -193,7 +193,7 @@ impl Value {
             Value::Float64(_) => LogicalTypeId::Float64,
             Value::String(_) => LogicalTypeId::String,
             Value::Binary(_) => LogicalTypeId::Binary,
-            Value::List(_) => LogicalTypeId::List,
+            // Value::List(_) => LogicalTypeId::List,
             // Value::Date(_) => LogicalTypeId::Date,
             Value::DateTime(_) => LogicalTypeId::DateTime,
             Value::Timestamp(t) => match t.unit() {
@@ -237,11 +237,11 @@ impl Value {
             // Value::Date(v) => ScalarValue::Date32(Some(v.val())),
             Value::DateTime(v) => ScalarValue::Date64(Some(v.val())),
             Value::Null => to_null_value(output_type),
-            Value::List(list) => {
-                // Safety: The logical type of the value and output_type are the same.
-                let list_type = output_type.as_list().unwrap();
-                list.try_to_scalar_value(list_type)?
-            }
+            // Value::List(list) => {
+            //     // Safety: The logical type of the value and output_type are the same.
+            //     let list_type = output_type.as_list().unwrap();
+            //     list.try_to_scalar_value(list_type)?
+            // }
             Value::Timestamp(t) => timestamp_to_scalar_value(t.unit(), Some(t.value())),
         };
 
@@ -268,9 +268,9 @@ fn to_null_value(output_type: &ConcreteDataType) -> ScalarValue {
         // ConcreteDataType::Date(_) => ScalarValue::Date32(None),
         ConcreteDataType::DateTime(_) => ScalarValue::Date64(None),
         ConcreteDataType::Timestamp(t) => timestamp_to_scalar_value(t.unit(), None),
-        ConcreteDataType::List(_) => {
-            ScalarValue::List(None, Box::new(new_item_field(output_type.as_arrow_type())))
-        }
+        // ConcreteDataType::List(_) => {
+        //     ScalarValue::List(None, Box::new(new_item_field(output_type.as_arrow_type())))
+        // }
     }
 }
 
@@ -312,7 +312,7 @@ macro_rules! impl_ord_for_value_like {
                 // ($Type::Date(v1), $Type::Date(v2)) => v1.cmp(v2),
                 ($Type::DateTime(v1), $Type::DateTime(v2)) => v1.cmp(v2),
                 ($Type::Timestamp(v1), $Type::Timestamp(v2)) => v1.cmp(v2),
-                ($Type::List(v1), $Type::List(v2)) => v1.cmp(v2),
+                // ($Type::List(v1), $Type::List(v2)) => v1.cmp(v2),
                 _ => panic!(
                     "Cannot compare different values {:?} and {:?}",
                     $left, $right
@@ -415,7 +415,7 @@ impl TryFrom<Value> for serde_json::Value {
             Value::Binary(bytes) => serde_json::to_value(bytes)?,
             // Value::Date(v) => serde_json::Value::Number(v.val().into()),
             Value::DateTime(v) => serde_json::Value::Number(v.val().into()),
-            Value::List(v) => serde_json::to_value(v)?,
+            // Value::List(v) => serde_json::to_value(v)?,
             Value::Timestamp(v) => serde_json::to_value(v.value())?,
         };
 
@@ -423,73 +423,73 @@ impl TryFrom<Value> for serde_json::Value {
     }
 }
 
-// TODO(yingwen): Consider removing the `datatype` field from `ListValue`.
-/// List value.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ListValue {
-    /// List of nested Values (boxed to reduce size_of(Value))
-    #[allow(clippy::box_collection)]
-    items: Option<Box<Vec<Value>>>,
-    /// Inner values datatype, to distinguish empty lists of different datatypes.
-    /// Restricted by DataFusion, cannot use null datatype for empty list.
-    datatype: ConcreteDataType,
-}
+// // TODO(yingwen): Consider removing the `datatype` field from `ListValue`.
+// /// List value.
+// #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+// pub struct ListValue {
+//     /// List of nested Values (boxed to reduce size_of(Value))
+//     #[allow(clippy::box_collection)]
+//     items: Option<Box<Vec<Value>>>,
+//     /// Inner values datatype, to distinguish empty lists of different datatypes.
+//     /// Restricted by DataFusion, cannot use null datatype for empty list.
+//     datatype: ConcreteDataType,
+// }
 
-impl Eq for ListValue {}
+// impl Eq for ListValue {}
 
-impl ListValue {
-    pub fn new(items: Option<Box<Vec<Value>>>, datatype: ConcreteDataType) -> Self {
-        Self { items, datatype }
-    }
+// impl ListValue {
+//     pub fn new(items: Option<Box<Vec<Value>>>, datatype: ConcreteDataType) -> Self {
+//         Self { items, datatype }
+//     }
 
-    pub fn items(&self) -> &Option<Box<Vec<Value>>> {
-        &self.items
-    }
+//     pub fn items(&self) -> &Option<Box<Vec<Value>>> {
+//         &self.items
+//     }
 
-    pub fn datatype(&self) -> &ConcreteDataType {
-        &self.datatype
-    }
+//     pub fn datatype(&self) -> &ConcreteDataType {
+//         &self.datatype
+//     }
 
-    fn try_to_scalar_value(&self, output_type: &ListType) -> Result<ScalarValue> {
-        let vs = if let Some(items) = self.items() {
-            Some(
-                items
-                    .iter()
-                    .map(|v| v.try_to_scalar_value(output_type.item_type()))
-                    .collect::<Result<Vec<_>>>()?,
-            )
-        } else {
-            None
-        };
+//     fn try_to_scalar_value(&self, output_type: &ListType) -> Result<ScalarValue> {
+//         let vs = if let Some(items) = self.items() {
+//             Some(
+//                 items
+//                     .iter()
+//                     .map(|v| v.try_to_scalar_value(output_type.item_type()))
+//                     .collect::<Result<Vec<_>>>()?,
+//             )
+//         } else {
+//             None
+//         };
 
-        Ok(ScalarValue::List(
-            vs,
-            Box::new(new_item_field(output_type.item_type().as_arrow_type())),
-        ))
-    }
-}
+//         Ok(ScalarValue::List(
+//             vs,
+//             Box::new(new_item_field(output_type.item_type().as_arrow_type())),
+//         ))
+//     }
+// }
 
-impl Default for ListValue {
-    fn default() -> ListValue {
-        ListValue::new(None, ConcreteDataType::null_datatype())
-    }
-}
+// impl Default for ListValue {
+//     fn default() -> ListValue {
+//         ListValue::new(None, ConcreteDataType::null_datatype())
+//     }
+// }
 
-impl PartialOrd for ListValue {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
+// impl PartialOrd for ListValue {
+//     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+//         Some(self.cmp(other))
+//     }
+// }
 
-impl Ord for ListValue {
-    fn cmp(&self, other: &Self) -> Ordering {
-        assert_eq!(
-            self.datatype, other.datatype,
-            "Cannot compare different datatypes!"
-        );
-        self.items.cmp(&other.items)
-    }
-}
+// impl Ord for ListValue {
+//     fn cmp(&self, other: &Self) -> Ordering {
+//         assert_eq!(
+//             self.datatype, other.datatype,
+//             "Cannot compare different datatypes!"
+//         );
+//         self.items.cmp(&other.items)
+//     }
+// }
 
 impl TryFrom<ScalarValue> for Value {
     type Error = error::Error;
@@ -514,19 +514,19 @@ impl TryFrom<ScalarValue> for Value {
             ScalarValue::Binary(b)
             | ScalarValue::LargeBinary(b)
             | ScalarValue::FixedSizeBinary(_, b) => Value::from(b.map(Bytes::from)),
-            ScalarValue::List(vs, field) => {
-                let items = if let Some(vs) = vs {
-                    let vs = vs
-                        .into_iter()
-                        .map(ScalarValue::try_into)
-                        .collect::<Result<_>>()?;
-                    Some(Box::new(vs))
-                } else {
-                    None
-                };
-                let datatype = ConcreteDataType::try_from(field.data_type())?;
-                Value::List(ListValue::new(items, datatype))
-            }
+            // ScalarValue::List(vs, field) => {
+            //     let items = if let Some(vs) = vs {
+            //         let vs = vs
+            //             .into_iter()
+            //             .map(ScalarValue::try_into)
+            //             .collect::<Result<_>>()?;
+            //         Some(Box::new(vs))
+            //     } else {
+            //         None
+            //     };
+            //     let datatype = ConcreteDataType::try_from(field.data_type())?;
+            //     Value::List(ListValue::new(items, datatype))
+            // }
             // ScalarValue::Date32(d) => d.map(|x| Value::Date(Date::new(x))).unwrap_or(Value::Null),
             ScalarValue::Date64(d) => d
                 .map(|x| Value::DateTime(DateTime::new(x)))
@@ -545,6 +545,7 @@ impl TryFrom<ScalarValue> for Value {
                 .unwrap_or(Value::Null),
             ScalarValue::Decimal128(_, _, _)
             | ScalarValue::Date32(_)
+            | ScalarValue::List(_, _)
             | ScalarValue::Time64(_)
             | ScalarValue::IntervalYearMonth(_)
             | ScalarValue::IntervalDayTime(_)
@@ -587,7 +588,7 @@ pub enum ValueRef<'a> {
     // Date(Date),
     DateTime(DateTime),
     Timestamp(Timestamp),
-    List(ListValueRef<'a>),
+    // List(ListValueRef<'a>),
 }
 
 macro_rules! impl_as_for_value_ref {
@@ -642,10 +643,10 @@ impl<'a> ValueRef<'a> {
         impl_as_for_value_ref!(self, Timestamp)
     }
 
-    /// Cast itself to [ListValueRef].
-    pub fn as_list(&self) -> Result<Option<ListValueRef>> {
-        impl_as_for_value_ref!(self, List)
-    }
+    // /// Cast itself to [ListValueRef].
+    // pub fn as_list(&self) -> Result<Option<ListValueRef>> {
+    //     impl_as_for_value_ref!(self, List)
+    // }
 }
 
 impl<'a> PartialOrd for ValueRef<'a> {
@@ -706,54 +707,54 @@ impl<'a> From<&'a [u8]> for ValueRef<'a> {
     }
 }
 
-impl<'a> From<Option<ListValueRef<'a>>> for ValueRef<'a> {
-    fn from(list: Option<ListValueRef>) -> ValueRef {
-        match list {
-            Some(v) => ValueRef::List(v),
-            None => ValueRef::Null,
-        }
-    }
-}
+// impl<'a> From<Option<ListValueRef<'a>>> for ValueRef<'a> {
+//     fn from(list: Option<ListValueRef>) -> ValueRef {
+//         match list {
+//             Some(v) => ValueRef::List(v),
+//             None => ValueRef::Null,
+//         }
+//     }
+// }
 
-/// Reference to a [ListValue].
-///
-/// Now comparison still requires some allocation (call of `to_value()`) and
-/// might be avoidable by downcasting and comparing the underlying array slice
-/// if it becomes bottleneck.
-#[derive(Debug, Clone, Copy)]
-pub enum ListValueRef<'a> {
-    // TODO(yingwen): Consider replace this by VectorRef.
-    Indexed { vector: &'a ListVector, idx: usize },
-    Ref { val: &'a ListValue },
-}
+// /// Reference to a [ListValue].
+// ///
+// /// Now comparison still requires some allocation (call of `to_value()`) and
+// /// might be avoidable by downcasting and comparing the underlying array slice
+// /// if it becomes bottleneck.
+// #[derive(Debug, Clone, Copy)]
+// pub enum ListValueRef<'a> {
+//     // TODO(yingwen): Consider replace this by VectorRef.
+//     Indexed { vector: &'a ListVector, idx: usize },
+//     Ref { val: &'a ListValue },
+// }
 
-impl<'a> ListValueRef<'a> {
-    /// Convert self to [Value]. This method would clone the underlying data.
-    fn to_value(self) -> Value {
-        match self {
-            ListValueRef::Indexed { vector, idx } => vector.get(idx),
-            ListValueRef::Ref { val } => Value::List(val.clone()),
-        }
-    }
-}
+// impl<'a> ListValueRef<'a> {
+//     /// Convert self to [Value]. This method would clone the underlying data.
+//     fn to_value(self) -> Value {
+//         match self {
+//             ListValueRef::Indexed { vector, idx } => vector.get(idx),
+//             ListValueRef::Ref { val } => Value::List(val.clone()),
+//         }
+//     }
+// }
 
-impl<'a> PartialEq for ListValueRef<'a> {
-    fn eq(&self, other: &Self) -> bool {
-        self.to_value().eq(&other.to_value())
-    }
-}
+// impl<'a> PartialEq for ListValueRef<'a> {
+//     fn eq(&self, other: &Self) -> bool {
+//         self.to_value().eq(&other.to_value())
+//     }
+// }
 
-impl<'a> Eq for ListValueRef<'a> {}
+// impl<'a> Eq for ListValueRef<'a> {}
 
-impl<'a> Ord for ListValueRef<'a> {
-    fn cmp(&self, other: &Self) -> Ordering {
-        // Respect the order of `Value` by converting into value before comparison.
-        self.to_value().cmp(&other.to_value())
-    }
-}
+// impl<'a> Ord for ListValueRef<'a> {
+//     fn cmp(&self, other: &Self) -> Ordering {
+//         // Respect the order of `Value` by converting into value before comparison.
+//         self.to_value().cmp(&other.to_value())
+//     }
+// }
 
-impl<'a> PartialOrd for ListValueRef<'a> {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
+// impl<'a> PartialOrd for ListValueRef<'a> {
+//     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+//         Some(self.cmp(other))
+//     }
+// }

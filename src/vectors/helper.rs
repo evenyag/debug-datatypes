@@ -27,11 +27,12 @@ use snafu::{OptionExt, ResultExt};
 use crate::data_type::ConcreteDataType;
 use crate::error::{self, Result};
 use crate::scalars::{Scalar, ScalarVectorBuilder};
-use crate::value::{ListValue, ListValueRef};
+// use crate::value::{ListValue, ListValueRef};
 use crate::vectors::{
     BinaryVector, BooleanVector, DateTimeVector, Float32Vector, Float64Vector,
     // BinaryVector, BooleanVector, DateTimeVector, DateVector, Float32Vector, Float64Vector,
-    Int16Vector, Int32Vector, Int64Vector, Int8Vector, ListVector, ListVectorBuilder,
+    Int16Vector, Int32Vector, Int64Vector, Int8Vector,
+    // Int16Vector, Int32Vector, Int64Vector, Int8Vector, ListVector, ListVectorBuilder,
     MutableVector, NullVector, StringVector, TimestampMicrosecondVector,
     TimestampMillisecondVector, TimestampNanosecondVector, TimestampSecondVector, UInt16Vector,
     UInt32Vector, UInt64Vector, UInt8Vector, Vector, VectorRef,
@@ -134,7 +135,7 @@ impl Helper {
             ArrowDataType::Utf8 => Arc::new(StringVector::try_from_arrow_array(array)?),
             // ArrowDataType::Date32 => Arc::new(DateVector::try_from_arrow_array(array)?),
             ArrowDataType::Date64 => Arc::new(DateTimeVector::try_from_arrow_array(array)?),
-            ArrowDataType::List(_) => Arc::new(ListVector::try_from_arrow_array(array)?),
+            // ArrowDataType::List(_) => Arc::new(ListVector::try_from_arrow_array(array)?),
             ArrowDataType::Timestamp(unit, _) => match unit {
                 TimeUnit::Second => Arc::new(TimestampSecondVector::try_from_arrow_array(array)?),
                 TimeUnit::Millisecond => {
@@ -156,6 +157,7 @@ impl Helper {
             | ArrowDataType::Binary
             | ArrowDataType::FixedSizeBinary(_)
             | ArrowDataType::LargeUtf8
+            | ArrowDataType::List(_)
             | ArrowDataType::LargeList(_)
             | ArrowDataType::FixedSizeList(_, _)
             | ArrowDataType::Struct(_)

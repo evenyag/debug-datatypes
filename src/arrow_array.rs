@@ -24,7 +24,7 @@ use snafu::OptionExt;
 
 use crate::data_type::ConcreteDataType;
 use crate::error::{ConversionSnafu, Result};
-use crate::value::{ListValue, Value};
+use crate::value::{Value};
 
 pub type BinaryArray = arrow::array::LargeBinaryArray;
 pub type MutableBinaryArray = arrow::array::LargeBinaryBuilder;

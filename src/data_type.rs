@@ -23,7 +23,7 @@ use crate::error::{self, Error, Result};
 use crate::type_id::LogicalTypeId;
 use crate::types::{
     BinaryType, BooleanType, DateTimeType, Float32Type, Float64Type, Int16Type,
-    Int32Type, Int64Type, Int8Type, ListType, NullType, StringType, TimestampMicrosecondType,
+    Int32Type, Int64Type, Int8Type, NullType, StringType, TimestampMicrosecondType,
     TimestampMillisecondType, TimestampNanosecondType, TimestampSecondType, TimestampType,
     UInt16Type, UInt32Type, UInt64Type, UInt8Type,
 };
@@ -58,70 +58,70 @@ pub enum ConcreteDataType {
     Timestamp(TimestampType),
 
     // Compound types:
-    List(ListType),
+    // List(ListType),
 }
 
 // TODO(yingwen): Refactor these `is_xxx()` methods, such as adding a `properties()` method
 // returning all these properties to the `DataType` trait
 impl ConcreteDataType {
-    pub fn is_float(&self) -> bool {
-        matches!(
-            self,
-            ConcreteDataType::Float64(_) | ConcreteDataType::Float32(_)
-        )
-    }
+    // pub fn is_float(&self) -> bool {
+    //     matches!(
+    //         self,
+    //         ConcreteDataType::Float64(_) | ConcreteDataType::Float32(_)
+    //     )
+    // }
 
-    pub fn is_boolean(&self) -> bool {
-        matches!(self, ConcreteDataType::Boolean(_))
-    }
+    // pub fn is_boolean(&self) -> bool {
+    //     matches!(self, ConcreteDataType::Boolean(_))
+    // }
 
-    pub fn is_stringifiable(&self) -> bool {
-        matches!(
-            self,
-            ConcreteDataType::String(_)
-                // | ConcreteDataType::Date(_)
-                | ConcreteDataType::DateTime(_)
-                | ConcreteDataType::Timestamp(_)
-        )
-    }
+    // pub fn is_stringifiable(&self) -> bool {
+    //     matches!(
+    //         self,
+    //         ConcreteDataType::String(_)
+    //             // | ConcreteDataType::Date(_)
+    //             | ConcreteDataType::DateTime(_)
+    //             | ConcreteDataType::Timestamp(_)
+    //     )
+    // }
 
-    pub fn is_signed(&self) -> bool {
-        matches!(
-            self,
-            ConcreteDataType::Int8(_)
-                | ConcreteDataType::Int16(_)
-                | ConcreteDataType::Int32(_)
-                | ConcreteDataType::Int64(_)
-                // | ConcreteDataType::Date(_)
-                | ConcreteDataType::DateTime(_)
-                | ConcreteDataType::Timestamp(_)
-        )
-    }
+    // pub fn is_signed(&self) -> bool {
+    //     matches!(
+    //         self,
+    //         ConcreteDataType::Int8(_)
+    //             | ConcreteDataType::Int16(_)
+    //             | ConcreteDataType::Int32(_)
+    //             | ConcreteDataType::Int64(_)
+    //             // | ConcreteDataType::Date(_)
+    //             | ConcreteDataType::DateTime(_)
+    //             | ConcreteDataType::Timestamp(_)
+    //     )
+    // }
 
-    pub fn is_unsigned(&self) -> bool {
-        matches!(
-            self,
-            ConcreteDataType::UInt8(_)
-                | ConcreteDataType::UInt16(_)
-                | ConcreteDataType::UInt32(_)
-                | ConcreteDataType::UInt64(_)
-        )
-    }
+    // pub fn is_unsigned(&self) -> bool {
+    //     matches!(
+    //         self,
+    //         ConcreteDataType::UInt8(_)
+    //             | ConcreteDataType::UInt16(_)
+    //             | ConcreteDataType::UInt32(_)
+    //             | ConcreteDataType::UInt64(_)
+    //     )
+    // }
 
-    pub fn numerics() -> Vec<ConcreteDataType> {
-        vec![
-            ConcreteDataType::int8_datatype(),
-            ConcreteDataType::int16_datatype(),
-            ConcreteDataType::int32_datatype(),
-            ConcreteDataType::int64_datatype(),
-            ConcreteDataType::uint8_datatype(),
-            ConcreteDataType::uint16_datatype(),
-            ConcreteDataType::uint32_datatype(),
-            ConcreteDataType::uint64_datatype(),
-            ConcreteDataType::float32_datatype(),
-            ConcreteDataType::float64_datatype(),
-        ]
-    }
+    // pub fn numerics() -> Vec<ConcreteDataType> {
+    //     vec![
+    //         ConcreteDataType::int8_datatype(),
+    //         ConcreteDataType::int16_datatype(),
+    //         ConcreteDataType::int32_datatype(),
+    //         ConcreteDataType::int64_datatype(),
+    //         ConcreteDataType::uint8_datatype(),
+    //         ConcreteDataType::uint16_datatype(),
+    //         ConcreteDataType::uint32_datatype(),
+    //         ConcreteDataType::uint64_datatype(),
+    //         ConcreteDataType::float32_datatype(),
+    //         ConcreteDataType::float64_datatype(),
+    //     ]
+    // }
 
     /// Convert arrow data type to [ConcreteDataType].
     ///
@@ -131,17 +131,17 @@ impl ConcreteDataType {
         ConcreteDataType::try_from(dt).expect("Unimplemented type")
     }
 
-    pub fn is_null(&self) -> bool {
-        matches!(self, ConcreteDataType::Null(NullType))
-    }
+    // pub fn is_null(&self) -> bool {
+    //     matches!(self, ConcreteDataType::Null(NullType))
+    // }
 
-    /// Try to cast the type as a [`ListType`].
-    pub fn as_list(&self) -> Option<&ListType> {
-        match self {
-            ConcreteDataType::List(t) => Some(t),
-            _ => None,
-        }
-    }
+    // /// Try to cast the type as a [`ListType`].
+    // pub fn as_list(&self) -> Option<&ListType> {
+    //     match self {
+    //         ConcreteDataType::List(t) => Some(t),
+    //         _ => None,
+    //     }
+    // }
 }
 
 impl TryFrom<&ArrowDataType> for ConcreteDataType {
@@ -166,9 +166,9 @@ impl TryFrom<&ArrowDataType> for ConcreteDataType {
             ArrowDataType::Timestamp(u, _) => ConcreteDataType::from_arrow_time_unit(u),
             ArrowDataType::Binary | ArrowDataType::LargeBinary => Self::binary_datatype(),
             ArrowDataType::Utf8 | ArrowDataType::LargeUtf8 => Self::string_datatype(),
-            ArrowDataType::List(field) => Self::List(ListType::new(
-                ConcreteDataType::from_arrow_type(field.data_type()),
-            )),
+            // ArrowDataType::List(field) => Self::List(ListType::new(
+            //     ConcreteDataType::from_arrow_type(field.data_type()),
+            // )),
             _ => {
                 return error::UnsupportedArrowTypeSnafu {
                     arrow_type: dt.clone(),
@@ -241,9 +241,9 @@ impl ConcreteDataType {
         }
     }
 
-    pub fn list_datatype(item_type: ConcreteDataType) -> ConcreteDataType {
-        ConcreteDataType::List(ListType::new(item_type))
-    }
+    // pub fn list_datatype(item_type: ConcreteDataType) -> ConcreteDataType {
+    //     ConcreteDataType::List(ListType::new(item_type))
+    // }
 }
 
 /// Data type abstraction.

@@ -18,7 +18,7 @@ use crate::data_type::DataType;
 use crate::types::TimestampType;
 use crate::vectors::{
     // BinaryVector, BooleanVector, DateTimeVector, DateVector, ListVector, PrimitiveVector,
-    BinaryVector, BooleanVector, DateTimeVector, ListVector, PrimitiveVector,
+    BinaryVector, BooleanVector, DateTimeVector, PrimitiveVector,
     StringVector, TimestampMicrosecondVector, TimestampMillisecondVector,
     TimestampNanosecondVector, TimestampSecondVector, Vector,
 };
@@ -76,7 +76,7 @@ fn equal(lhs: &dyn Vector, rhs: &dyn Vector) -> bool {
                 is_vector_eq!(TimestampNanosecondVector, lhs, rhs)
             }
         },
-        List(_) => is_vector_eq!(ListVector, lhs, rhs),
+        // List(_) => is_vector_eq!(ListVector, lhs, rhs),
         UInt8(_) | UInt16(_) | UInt32(_) | UInt64(_) | Int8(_) | Int16(_) | Int32(_) | Int64(_)
         | Float32(_) | Float64(_) => {
             with_match_primitive_type_id!(lhs_type.logical_type_id(), |$T| {
@@ -96,7 +96,7 @@ fn equal(lhs: &dyn Vector, rhs: &dyn Vector) -> bool {
 mod tests {
     use super::*;
     use crate::vectors::{
-        list, Float32Vector, Float64Vector, Int16Vector, Int32Vector, Int64Vector, Int8Vector,
+        Float32Vector, Float64Vector, Int16Vector, Int32Vector, Int64Vector, Int8Vector,
         NullVector, UInt16Vector, UInt32Vector, UInt64Vector, UInt8Vector, VectorRef,
     };
 
@@ -133,12 +133,12 @@ mod tests {
         ])));
         assert_vector_ref_eq(Arc::new(TimestampNanosecondVector::from_values([100, 120])));
 
-        let list_vector = list::tests::new_list_vector(&[
-            Some(vec![Some(1), Some(2)]),
-            None,
-            Some(vec![Some(3), Some(4)]),
-        ]);
-        assert_vector_ref_eq(Arc::new(list_vector));
+        // let list_vector = list::tests::new_list_vector(&[
+        //     Some(vec![Some(1), Some(2)]),
+        //     None,
+        //     Some(vec![Some(3), Some(4)]),
+        // ]);
+        // assert_vector_ref_eq(Arc::new(list_vector));
 
         assert_vector_ref_eq(Arc::new(NullVector::new(4)));
         assert_vector_ref_eq(Arc::new(StringVector::from(vec![

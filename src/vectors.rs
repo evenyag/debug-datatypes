@@ -30,7 +30,7 @@ mod boolean;
 mod datetime;
 mod eq;
 mod helper;
-mod list;
+// mod list;
 mod null;
 mod primitive;
 mod string;
@@ -42,7 +42,7 @@ pub use boolean::{BooleanVector, BooleanVectorBuilder};
 // pub use date::{DateVector, DateVectorBuilder};
 pub use datetime::{DateTimeVector, DateTimeVectorBuilder};
 pub use helper::Helper;
-pub use list::{ListIter, ListVector, ListVectorBuilder};
+// pub use list::{ListIter, ListVector, ListVectorBuilder};
 pub use null::{NullVector, NullVectorBuilder};
 pub use primitive::{
     Float32Vector, Float32VectorBuilder, Float64Vector, Float64VectorBuilder, Int16Vector,

@@ -20,9 +20,10 @@ use crate::types::{
     Float32Type, Float64Type, Int16Type, Int32Type, Int64Type, Int8Type, UInt16Type, UInt32Type,
     UInt64Type, UInt8Type,
 };
-use crate::value::{ListValue, ListValueRef, Value};
+use crate::value::{Value};
+// use crate::value::{ListValue, ListValueRef, Value};
 use crate::vectors::{
-    BinaryVector, BooleanVector, DateTimeVector, ListVector, MutableVector,
+    BinaryVector, BooleanVector, DateTimeVector, MutableVector,
     // BinaryVector, BooleanVector, DateTimeVector, DateVector, ListVector, MutableVector,
     PrimitiveVector, StringVector, Vector,
 };
@@ -301,34 +302,34 @@ impl<'a> ScalarRef<'a> for DateTime {
 
 // Timestamp types implement Scalar and ScalarRef in `src/timestamp.rs`.
 
-impl Scalar for ListValue {
-    type VectorType = ListVector;
-    type RefType<'a> = ListValueRef<'a>;
+// impl Scalar for ListValue {
+//     type VectorType = ListVector;
+//     type RefType<'a> = ListValueRef<'a>;
 
-    fn as_scalar_ref(&self) -> Self::RefType<'_> {
-        ListValueRef::Ref { val: self }
-    }
+//     fn as_scalar_ref(&self) -> Self::RefType<'_> {
+//         ListValueRef::Ref { val: self }
+//     }
 
-    fn upcast_gat<'short, 'long: 'short>(long: Self::RefType<'long>) -> Self::RefType<'short> {
-        long
-    }
-}
+//     fn upcast_gat<'short, 'long: 'short>(long: Self::RefType<'long>) -> Self::RefType<'short> {
+//         long
+//     }
+// }
 
-impl<'a> ScalarRef<'a> for ListValueRef<'a> {
-    type ScalarType = ListValue;
+// impl<'a> ScalarRef<'a> for ListValueRef<'a> {
+//     type ScalarType = ListValue;
 
-    fn to_owned_scalar(&self) -> Self::ScalarType {
-        match self {
-            ListValueRef::Indexed { vector, idx } => match vector.get(*idx) {
-                // Normally should not get `Value::Null` if the `ListValueRef` comes
-                // from the iterator of the ListVector, but we avoid panic and just
-                // returns a default list value in such case since `ListValueRef` may
-                // be constructed manually.
-                Value::Null => ListValue::default(),
-                Value::List(v) => v,
-                _ => unreachable!(),
-            },
-            ListValueRef::Ref { val } => (*val).clone(),
-        }
-    }
-}
+//     fn to_owned_scalar(&self) -> Self::ScalarType {
+//         match self {
+//             ListValueRef::Indexed { vector, idx } => match vector.get(*idx) {
+//                 // Normally should not get `Value::Null` if the `ListValueRef` comes
+//                 // from the iterator of the ListVector, but we avoid panic and just
+//                 // returns a default list value in such case since `ListValueRef` may
+//                 // be constructed manually.
+//                 Value::Null => ListValue::default(),
+//                 Value::List(v) => v,
+//                 _ => unreachable!(),
+//             },
+//             ListValueRef::Ref { val } => (*val).clone(),
+//         }
+//     }
+// }
