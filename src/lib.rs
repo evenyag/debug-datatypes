@@ -16,7 +16,6 @@
 #![feature(assert_matches)]
 
 pub mod arrow_array;
-mod common;
 pub mod data_type;
 pub mod error;
 pub mod macros;

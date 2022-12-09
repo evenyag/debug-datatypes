@@ -14,7 +14,7 @@
 
 use std::sync::Arc;
 
-use crate::common::time::timestamp::TimeUnit;
+// use crate::common::time::timestamp::TimeUnit;
 use arrow::datatypes::{DataType as ArrowDataType, TimeUnit as ArrowTimeUnit};
 use paste::paste;
 use serde::{Deserialize, Serialize};
