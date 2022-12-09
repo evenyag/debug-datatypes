@@ -15,7 +15,7 @@
 use std::cmp::Ordering;
 use std::fmt;
 
-use crate::common::time::{Date, DateTime};
+// use crate::common::time::{Date, DateTime};
 use arrow::datatypes::{ArrowNativeType, ArrowPrimitiveType, DataType as ArrowDataType};
 use num::NumCast;
 use serde::{Deserialize, Serialize};
@@ -25,7 +25,6 @@ use crate::data_type::{ConcreteDataType, DataType};
 use crate::error::{self, Result};
 use crate::scalars::{Scalar, ScalarRef, ScalarVectorBuilder};
 use crate::type_id::LogicalTypeId;
-use crate::types::{DateTimeType};
 // use crate::types::{DateTimeType, DateType};
 use crate::value::{Value, ValueRef};
 use crate::vectors::{MutableVector, PrimitiveVector, PrimitiveVectorBuilder, Vector};
@@ -177,18 +176,18 @@ impl_wrapper!(f64, Float64Type);
 //     }
 // }
 
-impl WrapperType for DateTime {
-    type LogicalType = DateTimeType;
-    type Native = i64;
+// impl WrapperType for DateTime {
+//     type LogicalType = DateTimeType;
+//     type Native = i64;
 
-    fn from_native(value: Self::Native) -> Self {
-        DateTime::new(value)
-    }
+//     fn from_native(value: Self::Native) -> Self {
+//         DateTime::new(value)
+//     }
 
-    fn into_native(self) -> Self::Native {
-        self.val()
-    }
-}
+//     fn into_native(self) -> Self::Native {
+//         self.val()
+//     }
+// }
 
 macro_rules! define_logical_primitive_type {
     ($Native: ident, $TypeId: ident, $DataType: ident, $Largest: ident) => {

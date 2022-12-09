@@ -27,20 +27,20 @@ use crate::value::{Value, ValueRef};
 // mod binary;
 // mod boolean;
 // mod date;
-mod datetime;
+// mod datetime;
 mod eq;
 mod helper;
 // mod list;
 mod null;
 mod primitive;
 // mod string;
-mod timestamp;
-mod validity;
+// mod timestamp;
+// mod validity;
 
 // pub use binary::{BinaryVector, BinaryVectorBuilder};
 // pub use boolean::{BooleanVector, BooleanVectorBuilder};
 // pub use date::{DateVector, DateVectorBuilder};
-pub use datetime::{DateTimeVector, DateTimeVectorBuilder};
+// pub use datetime::{DateTimeVector, DateTimeVectorBuilder};
 pub use helper::Helper;
 // pub use list::{ListIter, ListVector, ListVectorBuilder};
 pub use null::{NullVector, NullVectorBuilder};
@@ -52,12 +52,12 @@ pub use primitive::{
     UInt64VectorBuilder, UInt8Vector, UInt8VectorBuilder,
 };
 // pub use string::{StringVector, StringVectorBuilder};
-pub use timestamp::{
-    TimestampMicrosecondVector, TimestampMicrosecondVectorBuilder, TimestampMillisecondVector,
-    TimestampMillisecondVectorBuilder, TimestampNanosecondVector, TimestampNanosecondVectorBuilder,
-    TimestampSecondVector, TimestampSecondVectorBuilder,
-};
-pub use validity::Validity;
+// pub use timestamp::{
+//     TimestampMicrosecondVector, TimestampMicrosecondVectorBuilder, TimestampMillisecondVector,
+//     TimestampMillisecondVectorBuilder, TimestampNanosecondVector, TimestampNanosecondVectorBuilder,
+//     TimestampSecondVector, TimestampSecondVectorBuilder,
+// };
+// pub use validity::Validity;
 
 // TODO(yingwen): arrow 28.0 implements Clone for all arrays, we could upgrade to it and simplify
 // some codes in methods such as `to_arrow_array()` and `to_boxed_arrow_array()`.
@@ -88,8 +88,8 @@ pub trait Vector: Send + Sync + Serializable + Debug {
     /// Convert this vector to a new boxed arrow [Array].
     fn to_boxed_arrow_array(&self) -> Box<dyn Array>;
 
-    /// Returns the validity of the Array.
-    fn validity(&self) -> Validity;
+    // /// Returns the validity of the Array.
+    // fn validity(&self) -> Validity;
 
     /// Returns the memory size of vector.
     fn memory_size(&self) -> usize;
@@ -208,11 +208,11 @@ macro_rules! impl_try_from_arrow_array_for_vector {
     };
 }
 
-macro_rules! impl_validity_for_vector {
-    ($array: expr) => {
-        Validity::from_array_data($array.data())
-    };
-}
+// macro_rules! impl_validity_for_vector {
+//     ($array: expr) => {
+//         Validity::from_array_data($array.data())
+//     };
+// }
 
 macro_rules! impl_get_for_vector {
     ($array: expr, $index: ident) => {
@@ -260,5 +260,6 @@ macro_rules! impl_extend_for_builder {
 
 pub(crate) use {
     impl_extend_for_builder, impl_get_for_vector, impl_get_ref_for_vector,
-    impl_try_from_arrow_array_for_vector, impl_validity_for_vector,
+    impl_try_from_arrow_array_for_vector,
+    // impl_try_from_arrow_array_for_vector, impl_validity_for_vector,
 };

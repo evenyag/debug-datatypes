@@ -16,9 +16,9 @@ use std::cmp::Ordering;
 use std::fmt::{Display, Formatter};
 
 use crate::common::base::{Bytes, StringBytes};
-use crate::common::time::date::Date;
-use crate::common::time::datetime::DateTime;
-use crate::common::time::timestamp::{TimeUnit, Timestamp};
+// use crate::common::time::date::Date;
+// use crate::common::time::datetime::DateTime;
+// use crate::common::time::timestamp::{TimeUnit, Timestamp};
 use arrow::datatypes::{DataType as ArrowDataType, Field};
 use datafusion_common::ScalarValue;
 pub use ordered_float::OrderedFloat;
@@ -60,8 +60,8 @@ pub enum Value {
 
     // Date & Time types:
     // Date(Date),
-    DateTime(DateTime),
-    Timestamp(Timestamp),
+    // DateTime(DateTime),
+    // Timestamp(Timestamp),
 
     // List(ListValue),
 }
@@ -91,8 +91,8 @@ impl Display for Value {
             //     write!(f, "{}", hex)
             // }
             // Value::Date(v) => write!(f, "{}", v),
-            Value::DateTime(v) => write!(f, "{}", v),
-            Value::Timestamp(v) => write!(f, "{}", v.to_iso8601_string()),
+            // Value::DateTime(v) => write!(f, "{}", v),
+            // Value::Timestamp(v) => write!(f, "{}", v.to_iso8601_string()),
             // Value::List(v) => {
             //     let default = Box::new(vec![]);
             //     let items = v.items().as_ref().unwrap_or(&default);
@@ -129,8 +129,8 @@ impl Value {
             // Value::String(_) => ConcreteDataType::string_datatype(),
             // Value::Binary(_) => ConcreteDataType::binary_datatype(),
             // Value::Date(_) => ConcreteDataType::date_datatype(),
-            Value::DateTime(_) => ConcreteDataType::datetime_datatype(),
-            Value::Timestamp(v) => ConcreteDataType::timestamp_datatype(v.unit()),
+            // Value::DateTime(_) => ConcreteDataType::datetime_datatype(),
+            // Value::Timestamp(v) => ConcreteDataType::timestamp_datatype(v.unit()),
             // Value::List(list) => ConcreteDataType::list_datatype(list.datatype().clone()),
         }
     }
@@ -170,9 +170,9 @@ impl Value {
             // Value::String(v) => ValueRef::String(v.as_utf8()),
             // Value::Binary(v) => ValueRef::Binary(v),
             // Value::Date(v) => ValueRef::Date(*v),
-            Value::DateTime(v) => ValueRef::DateTime(*v),
+            // Value::DateTime(v) => ValueRef::DateTime(*v),
             // Value::List(v) => ValueRef::List(ListValueRef::Ref { val: v }),
-            Value::Timestamp(v) => ValueRef::Timestamp(*v),
+            // Value::Timestamp(v) => ValueRef::Timestamp(*v),
         }
     }
 
@@ -195,13 +195,13 @@ impl Value {
             // Value::Binary(_) => LogicalTypeId::Binary,
             // Value::List(_) => LogicalTypeId::List,
             // Value::Date(_) => LogicalTypeId::Date,
-            Value::DateTime(_) => LogicalTypeId::DateTime,
-            Value::Timestamp(t) => match t.unit() {
-                TimeUnit::Second => LogicalTypeId::TimestampSecond,
-                TimeUnit::Millisecond => LogicalTypeId::TimestampMillisecond,
-                TimeUnit::Microsecond => LogicalTypeId::TimestampMicrosecond,
-                TimeUnit::Nanosecond => LogicalTypeId::TimestampNanosecond,
-            },
+            // Value::DateTime(_) => LogicalTypeId::DateTime,
+            // Value::Timestamp(t) => match t.unit() {
+            //     TimeUnit::Second => LogicalTypeId::TimestampSecond,
+            //     TimeUnit::Millisecond => LogicalTypeId::TimestampMillisecond,
+            //     TimeUnit::Microsecond => LogicalTypeId::TimestampMicrosecond,
+            //     TimeUnit::Nanosecond => LogicalTypeId::TimestampNanosecond,
+            // },
         }
     }
 
@@ -235,14 +235,14 @@ impl Value {
             // Value::String(v) => ScalarValue::Utf8(Some(v.as_utf8().to_string())),
             // Value::Binary(v) => ScalarValue::LargeBinary(Some(v.to_vec())),
             // Value::Date(v) => ScalarValue::Date32(Some(v.val())),
-            Value::DateTime(v) => ScalarValue::Date64(Some(v.val())),
+            // Value::DateTime(v) => ScalarValue::Date64(Some(v.val())),
             Value::Null => to_null_value(output_type),
             // Value::List(list) => {
             //     // Safety: The logical type of the value and output_type are the same.
             //     let list_type = output_type.as_list().unwrap();
             //     list.try_to_scalar_value(list_type)?
             // }
-            Value::Timestamp(t) => timestamp_to_scalar_value(t.unit(), Some(t.value())),
+            // Value::Timestamp(t) => timestamp_to_scalar_value(t.unit(), Some(t.value())),
         };
 
         Ok(scalar_value)
@@ -266,8 +266,8 @@ fn to_null_value(output_type: &ConcreteDataType) -> ScalarValue {
         // ConcreteDataType::Binary(_) => ScalarValue::LargeBinary(None),
         // ConcreteDataType::String(_) => ScalarValue::Utf8(None),
         // ConcreteDataType::Date(_) => ScalarValue::Date32(None),
-        ConcreteDataType::DateTime(_) => ScalarValue::Date64(None),
-        ConcreteDataType::Timestamp(t) => timestamp_to_scalar_value(t.unit(), None),
+        // ConcreteDataType::DateTime(_) => ScalarValue::Date64(None),
+        // ConcreteDataType::Timestamp(t) => timestamp_to_scalar_value(t.unit(), None),
         // ConcreteDataType::List(_) => {
         //     ScalarValue::List(None, Box::new(new_item_field(output_type.as_arrow_type())))
         // }
@@ -278,14 +278,14 @@ fn new_item_field(data_type: ArrowDataType) -> Field {
     Field::new("item", data_type, false)
 }
 
-fn timestamp_to_scalar_value(unit: TimeUnit, val: Option<i64>) -> ScalarValue {
-    match unit {
-        TimeUnit::Second => ScalarValue::TimestampSecond(val, None),
-        TimeUnit::Millisecond => ScalarValue::TimestampMillisecond(val, None),
-        TimeUnit::Microsecond => ScalarValue::TimestampMicrosecond(val, None),
-        TimeUnit::Nanosecond => ScalarValue::TimestampNanosecond(val, None),
-    }
-}
+// fn timestamp_to_scalar_value(unit: TimeUnit, val: Option<i64>) -> ScalarValue {
+//     match unit {
+//         TimeUnit::Second => ScalarValue::TimestampSecond(val, None),
+//         TimeUnit::Millisecond => ScalarValue::TimestampMillisecond(val, None),
+//         TimeUnit::Microsecond => ScalarValue::TimestampMicrosecond(val, None),
+//         TimeUnit::Nanosecond => ScalarValue::TimestampNanosecond(val, None),
+//     }
+// }
 
 macro_rules! impl_ord_for_value_like {
     ($Type: ident, $left: ident, $right: ident) => {
@@ -310,8 +310,8 @@ macro_rules! impl_ord_for_value_like {
                 // ($Type::String(v1), $Type::String(v2)) => v1.cmp(v2),
                 // ($Type::Binary(v1), $Type::Binary(v2)) => v1.cmp(v2),
                 // ($Type::Date(v1), $Type::Date(v2)) => v1.cmp(v2),
-                ($Type::DateTime(v1), $Type::DateTime(v2)) => v1.cmp(v2),
-                ($Type::Timestamp(v1), $Type::Timestamp(v2)) => v1.cmp(v2),
+                // ($Type::DateTime(v1), $Type::DateTime(v2)) => v1.cmp(v2),
+                // ($Type::Timestamp(v1), $Type::Timestamp(v2)) => v1.cmp(v2),
                 // ($Type::List(v1), $Type::List(v2)) => v1.cmp(v2),
                 _ => panic!(
                     "Cannot compare different values {:?} and {:?}",
@@ -367,8 +367,8 @@ impl_value_from!(Float64, f64);
 // impl_value_from!(String, StringBytes);
 // impl_value_from!(Binary, Bytes);
 // impl_value_from!(Date, Date);
-impl_value_from!(DateTime, DateTime);
-impl_value_from!(Timestamp, Timestamp);
+// impl_value_from!(DateTime, DateTime);
+// impl_value_from!(Timestamp, Timestamp);
 
 // impl From<String> for Value {
 //     fn from(string: String) -> Value {
@@ -414,9 +414,9 @@ impl TryFrom<Value> for serde_json::Value {
             // Value::String(bytes) => serde_json::Value::String(bytes.as_utf8().to_string()),
             // Value::Binary(bytes) => serde_json::to_value(bytes)?,
             // Value::Date(v) => serde_json::Value::Number(v.val().into()),
-            Value::DateTime(v) => serde_json::Value::Number(v.val().into()),
+            // Value::DateTime(v) => serde_json::Value::Number(v.val().into()),
             // Value::List(v) => serde_json::to_value(v)?,
-            Value::Timestamp(v) => serde_json::to_value(v.value())?,
+            // Value::Timestamp(v) => serde_json::to_value(v.value())?,
         };
 
         Ok(json_value)
@@ -528,21 +528,21 @@ impl TryFrom<ScalarValue> for Value {
             //     Value::List(ListValue::new(items, datatype))
             // }
             // ScalarValue::Date32(d) => d.map(|x| Value::Date(Date::new(x))).unwrap_or(Value::Null),
-            ScalarValue::Date64(d) => d
-                .map(|x| Value::DateTime(DateTime::new(x)))
-                .unwrap_or(Value::Null),
-            ScalarValue::TimestampSecond(t, _) => t
-                .map(|x| Value::Timestamp(Timestamp::new(x, TimeUnit::Second)))
-                .unwrap_or(Value::Null),
-            ScalarValue::TimestampMillisecond(t, _) => t
-                .map(|x| Value::Timestamp(Timestamp::new(x, TimeUnit::Millisecond)))
-                .unwrap_or(Value::Null),
-            ScalarValue::TimestampMicrosecond(t, _) => t
-                .map(|x| Value::Timestamp(Timestamp::new(x, TimeUnit::Microsecond)))
-                .unwrap_or(Value::Null),
-            ScalarValue::TimestampNanosecond(t, _) => t
-                .map(|x| Value::Timestamp(Timestamp::new(x, TimeUnit::Nanosecond)))
-                .unwrap_or(Value::Null),
+            // ScalarValue::Date64(d) => d
+            //     .map(|x| Value::DateTime(DateTime::new(x)))
+            //     .unwrap_or(Value::Null),
+            // ScalarValue::TimestampSecond(t, _) => t
+            //     .map(|x| Value::Timestamp(Timestamp::new(x, TimeUnit::Second)))
+            //     .unwrap_or(Value::Null),
+            // ScalarValue::TimestampMillisecond(t, _) => t
+            //     .map(|x| Value::Timestamp(Timestamp::new(x, TimeUnit::Millisecond)))
+            //     .unwrap_or(Value::Null),
+            // ScalarValue::TimestampMicrosecond(t, _) => t
+            //     .map(|x| Value::Timestamp(Timestamp::new(x, TimeUnit::Microsecond)))
+            //     .unwrap_or(Value::Null),
+            // ScalarValue::TimestampNanosecond(t, _) => t
+            //     .map(|x| Value::Timestamp(Timestamp::new(x, TimeUnit::Nanosecond)))
+            //     .unwrap_or(Value::Null),
             _ => {
                 return error::UnsupportedArrowTypeSnafu {
                     arrow_type: v.get_datatype(),
@@ -579,8 +579,8 @@ pub enum ValueRef {
 
     // Date & Time types:
     // Date(Date),
-    DateTime(DateTime),
-    Timestamp(Timestamp),
+    // DateTime(DateTime),
+    // Timestamp(Timestamp),
     // List(ListValueRef<'a>),
 }
 
@@ -628,14 +628,14 @@ impl ValueRef {
     //     impl_as_for_value_ref!(self, Date)
     // }
 
-    /// Cast itself to [DateTime].
-    pub fn as_datetime(&self) -> Result<Option<DateTime>> {
-        impl_as_for_value_ref!(self, DateTime)
-    }
+    // /// Cast itself to [DateTime].
+    // pub fn as_datetime(&self) -> Result<Option<DateTime>> {
+    //     impl_as_for_value_ref!(self, DateTime)
+    // }
 
-    pub fn as_timestamp(&self) -> Result<Option<Timestamp>> {
-        impl_as_for_value_ref!(self, Timestamp)
-    }
+    // pub fn as_timestamp(&self) -> Result<Option<Timestamp>> {
+    //     impl_as_for_value_ref!(self, Timestamp)
+    // }
 
     // /// Cast itself to [ListValueRef].
     // pub fn as_list(&self) -> Result<Option<ListValueRef>> {
@@ -690,8 +690,8 @@ impl_value_ref_from!(Int64, i64);
 impl_value_ref_from!(Float32, f32);
 impl_value_ref_from!(Float64, f64);
 // impl_value_ref_from!(Date, Date);
-impl_value_ref_from!(DateTime, DateTime);
-impl_value_ref_from!(Timestamp, Timestamp);
+// impl_value_ref_from!(DateTime, DateTime);
+// impl_value_ref_from!(Timestamp, Timestamp);
 
 // impl<'a> From<&'a str> for ValueRef<'a> {
 //     fn from(string: &'a str) -> ValueRef<'a> {

@@ -23,7 +23,7 @@ use crate::types::{
 use crate::value::{Value};
 // use crate::value::{ListValue, ListValueRef, Value};
 use crate::vectors::{
-    DateTimeVector, MutableVector,
+    MutableVector,
     // BinaryVector, BooleanVector, DateTimeVector, DateVector, ListVector, MutableVector,
     PrimitiveVector, Vector,
     // PrimitiveVector, StringVector, Vector,
@@ -280,26 +280,26 @@ impl_scalar_for_native!(f64, Float64Type);
 //     }
 // }
 
-impl Scalar for DateTime {
-    type VectorType = DateTimeVector;
-    type RefType<'a> = DateTime;
+// impl Scalar for DateTime {
+//     type VectorType = DateTimeVector;
+//     type RefType<'a> = DateTime;
 
-    fn as_scalar_ref(&self) -> Self::RefType<'_> {
-        *self
-    }
+//     fn as_scalar_ref(&self) -> Self::RefType<'_> {
+//         *self
+//     }
 
-    fn upcast_gat<'short, 'long: 'short>(long: Self::RefType<'long>) -> Self::RefType<'short> {
-        long
-    }
-}
+//     fn upcast_gat<'short, 'long: 'short>(long: Self::RefType<'long>) -> Self::RefType<'short> {
+//         long
+//     }
+// }
 
-impl<'a> ScalarRef<'a> for DateTime {
-    type ScalarType = DateTime;
+// impl<'a> ScalarRef<'a> for DateTime {
+//     type ScalarType = DateTime;
 
-    fn to_owned_scalar(&self) -> Self::ScalarType {
-        *self
-    }
-}
+//     fn to_owned_scalar(&self) -> Self::ScalarType {
+//         *self
+//     }
+// }
 
 // Timestamp types implement Scalar and ScalarRef in `src/timestamp.rs`.
 

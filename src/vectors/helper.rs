@@ -29,13 +29,14 @@ use crate::error::{self, Result};
 use crate::scalars::{Scalar, ScalarVectorBuilder};
 // use crate::value::{ListValue, ListValueRef};
 use crate::vectors::{
-    DateTimeVector, Float32Vector, Float64Vector,
+    Float32Vector, Float64Vector,
     // BinaryVector, BooleanVector, DateTimeVector, DateVector, Float32Vector, Float64Vector,
     Int16Vector, Int32Vector, Int64Vector, Int8Vector,
     // Int16Vector, Int32Vector, Int64Vector, Int8Vector, ListVector, ListVectorBuilder,
-    MutableVector, NullVector, TimestampMicrosecondVector,
+    MutableVector, NullVector,
     // MutableVector, NullVector, StringVector, TimestampMicrosecondVector,
-    TimestampMillisecondVector, TimestampNanosecondVector, TimestampSecondVector, UInt16Vector,
+    UInt16Vector,
+    // TimestampMillisecondVector, TimestampNanosecondVector, TimestampSecondVector, UInt16Vector,
     UInt32Vector, UInt64Vector, UInt8Vector, Vector, VectorRef,
 };
 
@@ -135,41 +136,21 @@ impl Helper {
             ArrowDataType::Float64 => Arc::new(Float64Vector::try_from_arrow_array(array)?),
             // ArrowDataType::Utf8 => Arc::new(StringVector::try_from_arrow_array(array)?),
             // ArrowDataType::Date32 => Arc::new(DateVector::try_from_arrow_array(array)?),
-            ArrowDataType::Date64 => Arc::new(DateTimeVector::try_from_arrow_array(array)?),
+            // ArrowDataType::Date64 => Arc::new(DateTimeVector::try_from_arrow_array(array)?),
             // ArrowDataType::List(_) => Arc::new(ListVector::try_from_arrow_array(array)?),
-            ArrowDataType::Timestamp(unit, _) => match unit {
-                TimeUnit::Second => Arc::new(TimestampSecondVector::try_from_arrow_array(array)?),
-                TimeUnit::Millisecond => {
-                    Arc::new(TimestampMillisecondVector::try_from_arrow_array(array)?)
-                }
-                TimeUnit::Microsecond => {
-                    Arc::new(TimestampMicrosecondVector::try_from_arrow_array(array)?)
-                }
-                TimeUnit::Nanosecond => {
-                    Arc::new(TimestampNanosecondVector::try_from_arrow_array(array)?)
-                }
-            },
-            ArrowDataType::Float16
-            | ArrowDataType::Boolean
-            | ArrowDataType::LargeBinary
-            | ArrowDataType::Utf8
-            | ArrowDataType::Date32
-            | ArrowDataType::Time32(_)
-            | ArrowDataType::Time64(_)
-            | ArrowDataType::Duration(_)
-            | ArrowDataType::Interval(_)
-            | ArrowDataType::Binary
-            | ArrowDataType::FixedSizeBinary(_)
-            | ArrowDataType::LargeUtf8
-            | ArrowDataType::List(_)
-            | ArrowDataType::LargeList(_)
-            | ArrowDataType::FixedSizeList(_, _)
-            | ArrowDataType::Struct(_)
-            | ArrowDataType::Union(_, _, _)
-            | ArrowDataType::Dictionary(_, _)
-            | ArrowDataType::Decimal128(_, _)
-            | ArrowDataType::Decimal256(_, _)
-            | ArrowDataType::Map(_, _) => {
+            // ArrowDataType::Timestamp(unit, _) => match unit {
+            //     TimeUnit::Second => Arc::new(TimestampSecondVector::try_from_arrow_array(array)?),
+            //     TimeUnit::Millisecond => {
+            //         Arc::new(TimestampMillisecondVector::try_from_arrow_array(array)?)
+            //     }
+            //     TimeUnit::Microsecond => {
+            //         Arc::new(TimestampMicrosecondVector::try_from_arrow_array(array)?)
+            //     }
+            //     TimeUnit::Nanosecond => {
+            //         Arc::new(TimestampNanosecondVector::try_from_arrow_array(array)?)
+            //     }
+            // },
+            _ => {
                 unimplemented!("Arrow array datatype: {:?}", array.as_ref().data_type())
             }
         })

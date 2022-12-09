@@ -15,13 +15,13 @@
 use std::sync::Arc;
 
 use crate::data_type::DataType;
-use crate::types::TimestampType;
+// use crate::types::TimestampType;
 use crate::vectors::{
     // BinaryVector, BooleanVector, DateTimeVector, DateVector, ListVector, PrimitiveVector,
-    DateTimeVector, PrimitiveVector,
-    TimestampMicrosecondVector, TimestampMillisecondVector,
+    PrimitiveVector,
     // StringVector, TimestampMicrosecondVector, TimestampMillisecondVector,
-    TimestampNanosecondVector, TimestampSecondVector, Vector,
+    Vector,
+    // TimestampNanosecondVector, TimestampSecondVector, Vector,
 };
 use crate::with_match_primitive_type_id;
 
@@ -62,21 +62,21 @@ fn equal(lhs: &dyn Vector, rhs: &dyn Vector) -> bool {
         // Binary(_) => is_vector_eq!(BinaryVector, lhs, rhs),
         // String(_) => is_vector_eq!(StringVector, lhs, rhs),
         // Date(_) => is_vector_eq!(DateVector, lhs, rhs),
-        DateTime(_) => is_vector_eq!(DateTimeVector, lhs, rhs),
-        Timestamp(t) => match t {
-            TimestampType::Second(_) => {
-                is_vector_eq!(TimestampSecondVector, lhs, rhs)
-            }
-            TimestampType::Millisecond(_) => {
-                is_vector_eq!(TimestampMillisecondVector, lhs, rhs)
-            }
-            TimestampType::Microsecond(_) => {
-                is_vector_eq!(TimestampMicrosecondVector, lhs, rhs)
-            }
-            TimestampType::Nanosecond(_) => {
-                is_vector_eq!(TimestampNanosecondVector, lhs, rhs)
-            }
-        },
+        // DateTime(_) => is_vector_eq!(DateTimeVector, lhs, rhs),
+        // Timestamp(t) => match t {
+        //     TimestampType::Second(_) => {
+        //         is_vector_eq!(TimestampSecondVector, lhs, rhs)
+        //     }
+        //     TimestampType::Millisecond(_) => {
+        //         is_vector_eq!(TimestampMillisecondVector, lhs, rhs)
+        //     }
+        //     TimestampType::Microsecond(_) => {
+        //         is_vector_eq!(TimestampMicrosecondVector, lhs, rhs)
+        //     }
+        //     TimestampType::Nanosecond(_) => {
+        //         is_vector_eq!(TimestampNanosecondVector, lhs, rhs)
+        //     }
+        // },
         // List(_) => is_vector_eq!(ListVector, lhs, rhs),
         UInt8(_) | UInt16(_) | UInt32(_) | UInt64(_) | Int8(_) | Int16(_) | Int32(_) | Int64(_)
         | Float32(_) | Float64(_) => {

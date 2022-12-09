@@ -22,11 +22,11 @@ use serde::{Deserialize, Serialize};
 use crate::error::{self, Error, Result};
 use crate::type_id::LogicalTypeId;
 use crate::types::{
-    DateTimeType, Float32Type, Float64Type, Int16Type,
+    Float32Type, Float64Type, Int16Type,
     // BinaryType, BooleanType, DateTimeType, Float32Type, Float64Type, Int16Type,
-    Int32Type, Int64Type, Int8Type, NullType, TimestampMicrosecondType,
+    Int32Type, Int64Type, Int8Type, NullType,
     // Int32Type, Int64Type, Int8Type, NullType, StringType, TimestampMicrosecondType,
-    TimestampMillisecondType, TimestampNanosecondType, TimestampSecondType, TimestampType,
+    // TimestampMillisecondType, TimestampNanosecondType, TimestampSecondType, TimestampType,
     UInt16Type, UInt32Type, UInt64Type, UInt8Type,
 };
 use crate::value::Value;
@@ -56,8 +56,8 @@ pub enum ConcreteDataType {
 
     // Date types:
     // Date(DateType),
-    DateTime(DateTimeType),
-    Timestamp(TimestampType),
+    // DateTime(DateTimeType),
+    // Timestamp(TimestampType),
 
     // Compound types:
     // List(ListType),
@@ -164,8 +164,8 @@ impl TryFrom<&ArrowDataType> for ConcreteDataType {
             ArrowDataType::Float32 => Self::float32_datatype(),
             ArrowDataType::Float64 => Self::float64_datatype(),
             // ArrowDataType::Date32 => Self::date_datatype(),
-            ArrowDataType::Date64 => Self::datetime_datatype(),
-            ArrowDataType::Timestamp(u, _) => ConcreteDataType::from_arrow_time_unit(u),
+            // ArrowDataType::Date64 => Self::datetime_datatype(),
+            // ArrowDataType::Timestamp(u, _) => ConcreteDataType::from_arrow_time_unit(u),
             // ArrowDataType::Binary | ArrowDataType::LargeBinary => Self::binary_datatype(),
             // ArrowDataType::Utf8 | ArrowDataType::LargeUtf8 => Self::string_datatype(),
             // ArrowDataType::List(field) => Self::List(ListType::new(
@@ -198,56 +198,55 @@ macro_rules! impl_new_concrete_type_functions {
 }
 
 impl_new_concrete_type_functions!(
-    Null, UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64, Float32, Float64,
+    Null, UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64, Float32, Float64
     // Null, Boolean, UInt8, UInt16, UInt32, UInt64, Int8, Int16, Int32, Int64, Float32, Float64,
-    DateTime
     // Binary, Date, DateTime, String
 );
 
-impl ConcreteDataType {
-    pub fn timestamp_second_datatype() -> Self {
-        ConcreteDataType::Timestamp(TimestampType::Second(TimestampSecondType::default()))
-    }
+// impl ConcreteDataType {
+//     pub fn timestamp_second_datatype() -> Self {
+//         ConcreteDataType::Timestamp(TimestampType::Second(TimestampSecondType::default()))
+//     }
 
-    pub fn timestamp_millisecond_datatype() -> Self {
-        ConcreteDataType::Timestamp(TimestampType::Millisecond(
-            TimestampMillisecondType::default(),
-        ))
-    }
+//     pub fn timestamp_millisecond_datatype() -> Self {
+//         ConcreteDataType::Timestamp(TimestampType::Millisecond(
+//             TimestampMillisecondType::default(),
+//         ))
+//     }
 
-    pub fn timestamp_microsecond_datatype() -> Self {
-        ConcreteDataType::Timestamp(TimestampType::Microsecond(
-            TimestampMicrosecondType::default(),
-        ))
-    }
+//     pub fn timestamp_microsecond_datatype() -> Self {
+//         ConcreteDataType::Timestamp(TimestampType::Microsecond(
+//             TimestampMicrosecondType::default(),
+//         ))
+//     }
 
-    pub fn timestamp_nanosecond_datatype() -> Self {
-        ConcreteDataType::Timestamp(TimestampType::Nanosecond(TimestampNanosecondType::default()))
-    }
+//     pub fn timestamp_nanosecond_datatype() -> Self {
+//         ConcreteDataType::Timestamp(TimestampType::Nanosecond(TimestampNanosecondType::default()))
+//     }
 
-    pub fn timestamp_datatype(unit: TimeUnit) -> Self {
-        match unit {
-            TimeUnit::Second => Self::timestamp_second_datatype(),
-            TimeUnit::Millisecond => Self::timestamp_millisecond_datatype(),
-            TimeUnit::Microsecond => Self::timestamp_microsecond_datatype(),
-            TimeUnit::Nanosecond => Self::timestamp_nanosecond_datatype(),
-        }
-    }
+//     pub fn timestamp_datatype(unit: TimeUnit) -> Self {
+//         match unit {
+//             TimeUnit::Second => Self::timestamp_second_datatype(),
+//             TimeUnit::Millisecond => Self::timestamp_millisecond_datatype(),
+//             TimeUnit::Microsecond => Self::timestamp_microsecond_datatype(),
+//             TimeUnit::Nanosecond => Self::timestamp_nanosecond_datatype(),
+//         }
+//     }
 
-    /// Converts from arrow timestamp unit to
-    pub fn from_arrow_time_unit(t: &ArrowTimeUnit) -> Self {
-        match t {
-            ArrowTimeUnit::Second => Self::timestamp_second_datatype(),
-            ArrowTimeUnit::Millisecond => Self::timestamp_millisecond_datatype(),
-            ArrowTimeUnit::Microsecond => Self::timestamp_microsecond_datatype(),
-            ArrowTimeUnit::Nanosecond => Self::timestamp_nanosecond_datatype(),
-        }
-    }
+//     /// Converts from arrow timestamp unit to
+//     pub fn from_arrow_time_unit(t: &ArrowTimeUnit) -> Self {
+//         match t {
+//             ArrowTimeUnit::Second => Self::timestamp_second_datatype(),
+//             ArrowTimeUnit::Millisecond => Self::timestamp_millisecond_datatype(),
+//             ArrowTimeUnit::Microsecond => Self::timestamp_microsecond_datatype(),
+//             ArrowTimeUnit::Nanosecond => Self::timestamp_nanosecond_datatype(),
+//         }
+//     }
 
-    // pub fn list_datatype(item_type: ConcreteDataType) -> ConcreteDataType {
-    //     ConcreteDataType::List(ListType::new(item_type))
-    // }
-}
+//     // pub fn list_datatype(item_type: ConcreteDataType) -> ConcreteDataType {
+//     //     ConcreteDataType::List(ListType::new(item_type))
+//     // }
+// }
 
 /// Data type abstraction.
 #[enum_dispatch::enum_dispatch]
